@@ -54,7 +54,6 @@ func Initialize() Block {
 		ID:        NewID(),
 		Serial:    0,
 		Timestamp: ts.String(),
-		Record:    "{}",
 	}
 
 	block.Hash = Hash(block)

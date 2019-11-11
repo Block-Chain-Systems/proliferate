@@ -17,6 +17,7 @@ func main() {
 	node := bc.Node{}
 
 	node.PushBlock("{\"initial\":\"block\"}")
+
 	node.PushBlock(Record{
 		id:    bc.NewID(),
 		value: "{\"test\":\"interface\"}",
