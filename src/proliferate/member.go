@@ -4,7 +4,17 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	//"math/big"
 )
+
+/*
+type Permission struct {
+	Root big.Int
+}
+
+type Member struct {
+}
+*/
 
 // ExtractPublicKey returns rsa.PublicKey from root pem
 func ExtractPublicKey(pemKey string) rsa.PublicKey {

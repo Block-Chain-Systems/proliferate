@@ -1,6 +1,10 @@
 package proliferate
 
-//import "fmt"
+import (
+	"fmt"
+
+	"github.com/satori/go.uuid"
+)
 
 type Orderer struct{}
 
@@ -17,4 +21,10 @@ func (orderer *Orderer) IndexNext(chain *Chain) int {
 func (orderer *Orderer) LastBlock(chain *Chain) Block {
 	c := *chain
 	return c[len(c)-1]
+}
+
+//NewID generates UUID V4 ID
+func NewID() string {
+	id := uuid.Must(uuid.NewV4())
+	return fmt.Sprintf("%s", id)
 }

@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 )
 
+// Hash returns hash value of Block
 func Hash(block Block) string {
 	values := ValueString(block)
 
@@ -18,27 +19,23 @@ func Hash(block Block) string {
 	return hex.EncodeToString(hash)
 }
 
+// ValueString returns string concatination of Block values
 func ValueString(block Block) string {
 
-	// Only need if block is less static
-	//value := reflect.ValueOf(block)
-	//values := make([]interface{}, values.NumField())
-
-	//for i := 0; i < values.NumField(); i++ {
-	//	values[i] = values
-	//}
+	// TODO add record back to hash
 
 	values := string(block.Index) +
 		block.ID +
 		string(block.Index) +
+		string(block.Serial) +
 		block.Timestamp +
-		block.Record +
+		//block.Record +
 		block.HashPrevious
 
 	return values
 }
 
-// VerifyHash checks hash value of block and returns true if matching hash argument
+// VerifyHash compares hash value of Block and returns bool
 func VerifyHash(block Block, hash string) bool {
 	blockHash := Hash(block)
 

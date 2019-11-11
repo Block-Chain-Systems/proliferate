@@ -1,19 +1,25 @@
 package proliferate
 
-import (
-	"fmt"
-	"time"
+import "time"
 
-	"github.com/satori/go.uuid"
-)
+type Block struct {
+	ID           string
+	Serial       int
+	Index        int
+	Timestamp    string
+	Record       interface{}
+	Hash         string
+	HashPrevious string
+}
 
-var order = Orderer{}
+type Chain []Block
 
-func (node *Node) prepareBlock(record string) Block {
+//prepareBlock returns record with new Block{} data from orderer
+func (node *Node) prepareBlock(record interface{}) Block {
 	n := *node
 	ts := time.Now()
 
-	lastBlock := order.LastBlock(&n.Chain)
+	lastBlock := n.Orderer.LastBlock(&n.Chain)
 
 	block := Block{
 		ID:           NewID(),
@@ -29,7 +35,7 @@ func (node *Node) prepareBlock(record string) Block {
 }
 
 //pushBlock creates block and pushes record to chain
-func (node *Node) PushBlock(record string) {
+func (node *Node) PushBlock(record interface{}) {
 	n := *node
 
 	if len(n.Chain) == 0 {
@@ -41,7 +47,7 @@ func (node *Node) PushBlock(record string) {
 	*node = n
 }
 
-//Initialize initialized chain if no record exists
+//Initialize starts empty chain if no record exists
 func Initialize() Block {
 	ts := time.Now()
 
@@ -55,10 +61,4 @@ func Initialize() Block {
 	block.Hash = Hash(block)
 
 	return block
-}
-
-//NewID generates UUID V4 ID
-func NewID() string {
-	id := uuid.Must(uuid.NewV4())
-	return fmt.Sprintf("%s", id)
 }
