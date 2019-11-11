@@ -24,9 +24,7 @@ func ValueString(block Block) string {
 
 	// TODO add record back to hash
 
-	values := string(block.Index) +
-		block.ID +
-		string(block.Index) +
+	values := block.ID +
 		string(block.Serial) +
 		block.Timestamp +
 		//block.Record +

@@ -5,7 +5,6 @@ import "time"
 type Block struct {
 	ID           string
 	Serial       int
-	Index        int
 	Timestamp    string
 	Record       interface{}
 	Hash         string
@@ -15,7 +14,7 @@ type Block struct {
 type Chain []Block
 
 //prepareBlock returns record with new Block{} data from orderer
-func (node *Node) prepareBlock(record interface{}) Block {
+func (node *Node) orderBlock(record interface{}) Block {
 	n := *node
 	ts := time.Now()
 
@@ -23,7 +22,7 @@ func (node *Node) prepareBlock(record interface{}) Block {
 
 	block := Block{
 		ID:           NewID(),
-		Index:        node.Orderer.IndexNext(&n.Chain),
+		Serial:       node.Orderer.SerialNext(&n.Chain),
 		Timestamp:    ts.String(),
 		Record:       record,
 		HashPrevious: lastBlock.Hash,
@@ -42,7 +41,7 @@ func (node *Node) PushBlock(record interface{}) {
 		n.Chain = append(n.Chain, Initialize())
 	}
 
-	block := n.prepareBlock(record)
+	block := n.orderBlock(record)
 	n.Chain = append(n.Chain, block)
 	*node = n
 }
@@ -53,7 +52,7 @@ func Initialize() Block {
 
 	block := Block{
 		ID:        NewID(),
-		Index:     0,
+		Serial:    0,
 		Timestamp: ts.String(),
 		Record:    "{}",
 	}
