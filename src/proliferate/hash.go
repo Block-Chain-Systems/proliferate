@@ -2,9 +2,10 @@ package proliferate
 
 import (
 	//"reflect"
-	//"fmt"
+	"fmt"
 
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 )
 
@@ -21,13 +22,12 @@ func Hash(block Block) string {
 
 // ValueString returns string concatination of Block values
 func ValueString(block Block) string {
-
-	// TODO add record back to hash
+	record := []byte(fmt.Sprintf("%s", block.Record))
 
 	values := block.ID +
 		string(block.Serial) +
 		block.Timestamp +
-		//block.Record +
+		base64.StdEncoding.EncodeToString(record) +
 		block.HashPrevious
 
 	return values

@@ -13,7 +13,7 @@ type Block struct {
 
 type Chain []Block
 
-//prepareBlock returns record with new Block{} data from orderer
+//orderBlock returns record with new Block{} data from orderer
 func (node *Node) orderBlock(record interface{}) Block {
 	n := *node
 	ts := time.Now()
@@ -30,7 +30,7 @@ func (node *Node) orderBlock(record interface{}) Block {
 
 	block.Hash = Hash(block)
 
-	return (block)
+	return block
 }
 
 //pushBlock creates block and pushes record to chain

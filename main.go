@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 
 	bc "./src/proliferate"
 )
@@ -9,6 +9,7 @@ import (
 type Record struct {
 	id    string
 	value string
+	test  []string
 }
 
 func main() {
@@ -19,13 +20,8 @@ func main() {
 	node.PushBlock(Record{
 		id:    bc.NewID(),
 		value: "{\"test\":\"interface\"}",
+		test:  []string{0: "one", 1: "two", 2: "three"},
 	})
 
-	fmt.Println(node.Chain[0].ID)
-	fmt.Println(node.Chain[1].ID)
-	fmt.Println(node.Chain[0].Hash)
-	fmt.Println(node.Chain[1].Record)
-	fmt.Println(node.Chain[1].HashPrevious)
-	fmt.Println(node.Chain[1].Hash)
-
+	bc.DumpChain(node.Chain)
 }
