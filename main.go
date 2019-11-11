@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 
-	"./src/bc"
+	bc "./src/proliferate"
 )
 
 func main() {
-	chain := bc.Chain{}
+	//chain := bc.Chain{}
+	node := bc.Node{}
 
-	chain.PushBlock("{\"Initial\":\"Block\"}")
+	node.PushBlock("{\"Initial\":\"Block\"}")
 
-	fmt.Println(chain[0].ID)
-	fmt.Println(chain[1].ID)
-	fmt.Println(chain[1].HashPrevious)
+	fmt.Println(node.Chain[0].ID)
+	fmt.Println(node.Chain[1].ID)
+	fmt.Println(node.Chain[0].Hash)
+	fmt.Println(node.Chain[1].HashPrevious)
+	fmt.Println(node.Chain[1].Hash)
 
 }

@@ -1,4 +1,4 @@
-package bc
+package proliferate
 
 import (
 	"fmt"
@@ -7,33 +7,20 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-type Block struct {
-	ID           string
-	Serial       int
-	Index        int
-	Timestamp    string
-	Record       string
-	Hash         string
-	HashPrevious string
-}
-
-type Chain []Block
-
 var order = Orderer{}
 
-// prepareBlock evaluates chain and places record in new block
-func (chain *Chain) prepareBlock(record string) Block {
-	c := *chain
+func (node *Node) prepareBlock(record string) Block {
+	n := *node
 	ts := time.Now()
 
-	prevBlock := c[len(c)-1]
+	lastBlock := order.LastBlock(&n.Chain)
 
 	block := Block{
 		ID:           NewID(),
-		Index:        order.IndexNext(&c),
+		Index:        node.Orderer.IndexNext(&n.Chain),
 		Timestamp:    ts.String(),
 		Record:       record,
-		HashPrevious: prevBlock.Hash,
+		HashPrevious: lastBlock.Hash,
 	}
 
 	block.Hash = Hash(block)
@@ -42,16 +29,16 @@ func (chain *Chain) prepareBlock(record string) Block {
 }
 
 //pushBlock creates block and pushes record to chain
-func (chain *Chain) PushBlock(record string) {
-	c := *chain
+func (node *Node) PushBlock(record string) {
+	n := *node
 
-	if len(c) == 0 {
-		c = append(c, Initialize())
+	if len(n.Chain) == 0 {
+		n.Chain = append(n.Chain, Initialize())
 	}
 
-	block := c.prepareBlock(record)
-	c = append(c, block)
-	*chain = c
+	block := n.prepareBlock(record)
+	n.Chain = append(n.Chain, block)
+	*node = n
 }
 
 //Initialize initialized chain if no record exists
