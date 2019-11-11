@@ -15,5 +15,4 @@ func main() {
 	fmt.Println(chain[1].ID)
 	fmt.Println(chain[1].HashPrevious)
 
-	//fmt.Println(chain)
 }

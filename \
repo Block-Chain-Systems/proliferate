@@ -19,8 +19,6 @@ type Block struct {
 
 type Chain []Block
 
-var order = Orderer{}
-
 // prepareBlock evaluates chain and places record in new block
 func (chain *Chain) prepareBlock(record string) Block {
 	c := *chain
@@ -30,7 +28,7 @@ func (chain *Chain) prepareBlock(record string) Block {
 
 	block := Block{
 		ID:           NewID(),
-		Index:        order.IndexNext(&c),
+		Index:        ,
 		Timestamp:    ts.String(),
 		Record:       record,
 		HashPrevious: prevBlock.Hash,
