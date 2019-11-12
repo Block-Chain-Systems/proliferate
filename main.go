@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 
 	bc "./src/proliferate"
 )
@@ -25,4 +25,6 @@ func main() {
 	})
 
 	bc.DumpChain(node.Chain)
+
+	fmt.Println(bc.LoadConfig())
 }
