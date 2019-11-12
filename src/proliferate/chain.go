@@ -38,7 +38,7 @@ func (node *Node) PushBlock(record interface{}) {
 	n := *node
 
 	if len(n.Chain) == 0 {
-		n.Chain = append(n.Chain, Initialize())
+		n.Chain = append(n.Chain, n.Initialize())
 	}
 
 	block := n.orderBlock(record)
@@ -47,8 +47,14 @@ func (node *Node) PushBlock(record interface{}) {
 }
 
 //Initialize starts empty chain if no record exists
-func Initialize() Block {
+func (node *Node) Initialize() Block {
+	n := *node
 	ts := time.Now()
+
+	n.Log(Message{
+		Level: 3,
+		Text:  "No blocks found. Creating genesis block",
+	})
 
 	block := Block{
 		ID:        NewID(),

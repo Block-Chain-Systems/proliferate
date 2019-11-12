@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 
 	bc "./src/proliferate"
 )
@@ -16,6 +16,7 @@ func main() {
 	//chain := bc.Chain{}
 	node := bc.Node{}
 
+	node.Start()
 	node.PushBlock("{\"initial\":\"block\"}")
 
 	node.PushBlock(Record{
@@ -24,7 +25,5 @@ func main() {
 		test:  []string{0: "one", 1: "two", 2: "three"},
 	})
 
-	bc.DumpChain(node.Chain)
-
-	fmt.Println(bc.LoadConfig())
+	//bc.DumpChain(node.Chain)
 }

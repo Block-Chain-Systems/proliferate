@@ -7,7 +7,16 @@ import (
 )
 
 type Config struct {
-	UseCouchDB bool `json:"useCouchDB"`
+	UseCouchDB bool    `json:"useCouchDB"`
+	Logging    Logging `json:"logging"`
+}
+
+type Logging struct {
+	Enabled      bool   `json:"enabled"`
+	Level        int    `json:"level"`
+	Console      bool   `json:"console"`
+	File         bool   `json:"file"`
+	FileLocation string `json:"fileLocation"`
 }
 
 // LoadJSON returns json as struct (TODO!)
