@@ -33,16 +33,14 @@ func (node *Node) Log(message Message) {
 	message.Function = frame.Function
 
 	if l.Console == true && message.Level <= l.Level {
-		text, _ := json.Marshal(message)
-		fmt.Printf("{\"%v\":%s}",
-			LabelSeverity(message.Level),
-			string(text))
+		text, _ := json.MarshalIndent(message, "", "  ")
+		LogEmit(LabelSeverity(message.Level), string(text))
 	}
 }
 
 func DumpChain(chain Chain) {
-	text, _ := json.Marshal(chain)
-	fmt.Printf("{\"chain\":%s}", string(text))
+	text, _ := json.MarshalIndent(chain, "", "  ")
+	LogEmit("chain", string(text))
 }
 
 func LabelSeverity(severity int) string {
@@ -59,4 +57,8 @@ func LabelSeverity(severity int) string {
 		return "verbose"
 	}
 	return "message"
+}
+
+func LogEmit(label string, message string) {
+	fmt.Printf("{\"%v\":%s}", label, message)
 }
