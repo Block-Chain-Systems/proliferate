@@ -28,7 +28,7 @@ func LoadConfig() Config {
 	defer configFile.Close()
 
 	if err != nil {
-		LogError("error", Message{
+		LogRaw(Message{
 			Level: 1,
 			Text:  err.Error(),
 		})

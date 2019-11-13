@@ -34,7 +34,6 @@ func (node *Node) Log(message Message) {
 	message.Function = frame.Function
 
 	if l.Console == true && message.Level <= l.Level {
-		//text, _ := json.MarshalIndent(message, "", "  ")
 		text := Prepare(message)
 		LogEmit(LabelSeverity(message.Level), string(text))
 	}
@@ -42,7 +41,15 @@ func (node *Node) Log(message Message) {
 
 // DumpChain emits entire blockchain
 func DumpChain(chain Chain) {
-	text, _ := json.MarshalIndent(chain, "", "  ")
+	text, err := json.MarshalIndent(chain, "", "  ")
+
+	if err != nil {
+		LogRaw(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
 	LogEmit("chain", string(text))
 }
 
@@ -77,7 +84,7 @@ func LogEmit(label string, message string) {
 }
 
 // LogError Directly emits error to console
-func LogError(label string, message Message) {
+func LogRaw(message Message) {
 	text := Prepare(message)
-	LogEmit(LabelSeverity(1), text)
+	LogEmit(LabelSeverity(message.Level), text)
 }

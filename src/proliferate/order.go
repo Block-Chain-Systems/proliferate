@@ -13,7 +13,6 @@ type Orderer struct{}
 // IndexNext returns next available index int
 func (orderer *Orderer) SerialNext(chain *Chain) int {
 	c := *chain
-	//prevBlock := c[len(c)-1]
 	prevBlock := orderer.LastBlock(&c)
 	return prevBlock.Serial + 1
 }
