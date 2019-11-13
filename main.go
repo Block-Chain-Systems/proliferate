@@ -25,5 +25,5 @@ func main() {
 		test:  []string{0: "one", 1: "two", 2: "three"},
 	})
 
-	bc.DumpChain(node.Chain)
+	//bc.DumpChain(node.Chain)
 }

@@ -2,7 +2,7 @@
 	"useCouchDB": true,
 	"logging": {
 		"enabled": true,
-		"level": 5,
+		"level": 4,
 		"console": true,
 		"file": false,
 		"fileLocation": "/var/log/proliferate"

@@ -2,7 +2,6 @@ package proliferate
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -28,10 +27,11 @@ func LoadConfig() Config {
 	configFile, err := os.Open(file)
 	defer configFile.Close()
 
-	// TODO enable logging
 	if err != nil {
-		//Log("util.LoadJSON", err.Error(), 4)
-		fmt.Println(err)
+		LogError("error", Message{
+			Level: 1,
+			Text:  err.Error(),
+		})
 	}
 	jsonParser := json.NewDecoder(configFile)
 	jsonParser.Decode(&config)

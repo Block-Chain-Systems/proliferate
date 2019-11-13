@@ -1,2 +1,2 @@
 # proliferate
-BCS - Open Source Blockchain
+Proliferate Blockchain Framework

@@ -1,6 +1,9 @@
 package proliferate
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Block struct {
 	ID           string
@@ -42,6 +45,12 @@ func (node *Node) PushBlock(record interface{}) {
 	}
 
 	block := n.orderBlock(record)
+
+	n.Log(Message{
+		Level: 5,
+		Text:  fmt.Sprintf("Pushing block: %v", block.ID),
+	})
+
 	n.Chain = append(n.Chain, block)
 	*node = n
 }
