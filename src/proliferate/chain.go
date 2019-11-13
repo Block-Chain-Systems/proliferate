@@ -6,12 +6,12 @@ import (
 )
 
 type Block struct {
-	ID           string
-	Serial       int
-	Timestamp    string
-	Record       interface{}
-	Hash         string
-	HashPrevious string
+	ID           string      `json:"id"`
+	Serial       int         `json:"serial"`
+	Timestamp    string      `json:"timestamp"`
+	Record       interface{} `json:"record"`
+	Hash         string      `json:"hash"`
+	HashPrevious string      `json:"hashPrevious"`
 }
 
 type Chain []Block

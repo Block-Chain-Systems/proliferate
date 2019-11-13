@@ -6,8 +6,15 @@ import (
 )
 
 type Config struct {
-	UseCouchDB bool    `json:"useCouchDB"`
-	Logging    Logging `json:"logging"`
+	Logging Logging     `json:"logging"`
+	Couch   CouchConfig `json:"couchDB"`
+}
+
+type CouchConfig struct {
+	Enabled  bool   `json:"enabled"`
+	Host     string `json:"host"`
+	Port     string `json:"port"`
+	Protocol string `json:"protocol"`
 }
 
 type Logging struct {
@@ -36,6 +43,5 @@ func LoadConfig() Config {
 	jsonParser := json.NewDecoder(configFile)
 	jsonParser.Decode(&config)
 
-	// Build struct to match
 	return (config)
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 
 	bc "./src/proliferate"
 )
@@ -26,4 +26,8 @@ func main() {
 	})
 
 	//bc.DumpChain(node.Chain)
+
+	//node.CouchTest()
+
+	fmt.Println(bc.NewID())
 }

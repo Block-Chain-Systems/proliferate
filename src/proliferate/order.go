@@ -22,6 +22,11 @@ func (orderer *Orderer) LastBlock(chain *Chain) Block {
 	return c[len(c)-1]
 }
 
+// ReplicateBlock pushes block to peers and awaits consensus
+func (orderer *Orderer) ReplicateBlock() {
+
+}
+
 //NewID generates UUID V4 ID
 func NewID() string {
 	id := uuid.Must(uuid.NewV4())
