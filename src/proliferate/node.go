@@ -78,7 +78,7 @@ func (node *Node) DownloadPeerList() {
 // ParseIdentity returns json as struct (TODO!)
 func (node *Node) ParseIdentity() {
 	n := *node
-	file := "id/id.json"
+	file := ".id/id.json"
 	var detail PeerDetail
 
 	n.Log(Message{
