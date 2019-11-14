@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Block records are an interface so records can be abstract
 type Block struct {
 	ID           string      `json:"id"`
 	Serial       int         `json:"serial"`
@@ -14,6 +15,7 @@ type Block struct {
 	HashPrevious string      `json:"hashPrevious"`
 }
 
+// Chain as a slice of blocks
 type Chain []Block
 
 //orderBlock returns record with new Block{} data from orderer
@@ -36,7 +38,7 @@ func (node *Node) orderBlock(record interface{}) Block {
 	return block
 }
 
-//pushBlock creates block and pushes record to chain
+//PushBlock creates block and pushes record to chain
 func (node *Node) PushBlock(record interface{}) {
 	n := *node
 

@@ -3,21 +3,25 @@ package proliferate
 import (
 	"fmt"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
+// Orderer struct
 type Orderer struct{}
 
 // TODO Leader/Follower peer ordering
 
-// IndexNext returns next available index int
+// SerialNext returns next available index int
 func (orderer *Orderer) SerialNext(chain *Chain) int {
 	c := *chain
 	prevBlock := orderer.LastBlock(&c)
 	return prevBlock.Serial + 1
 }
 
+// LastBlock returns last block on chain
 func (orderer *Orderer) LastBlock(chain *Chain) Block {
+	// TODO last block should check consensus
+
 	c := *chain
 	return c[len(c)-1]
 }

@@ -5,11 +5,14 @@ import (
 	"os"
 )
 
+// Config root config populated by config.json
 type Config struct {
-	Logging Logging     `json:"logging"`
-	Couch   CouchConfig `json:"couchDB"`
+	Logging Logging       `json:"logging"`
+	Couch   CouchConfig   `json:"couchDB"`
+	Network NetworkConfig `json:"network"`
 }
 
+// CouchConfig couchConfig populated by config.json
 type CouchConfig struct {
 	Enabled  bool   `json:"enabled"`
 	Host     string `json:"host"`
@@ -17,6 +20,7 @@ type CouchConfig struct {
 	Protocol string `json:"protocol"`
 }
 
+// Logging logging read from config.json
 type Logging struct {
 	Enabled      bool   `json:"enabled"`
 	Level        int    `json:"level"`
@@ -25,7 +29,15 @@ type Logging struct {
 	FileLocation string `json:"fileLocation"`
 }
 
-// LoadJSON returns json as struct (TODO!)
+// NetworkConfig networkConfig read from config.json
+type NetworkConfig struct {
+	Algorithm string   `json:"consensusAlgorithm"`
+	Role      int      `json:"role"`
+	MaxPeers  int      `json:"maxPeers"`
+	Discovery []string `json:"DiscoveryURL"`
+}
+
+// LoadConfig returns json as struct (TODO!)
 func LoadConfig() Config {
 	var config Config
 

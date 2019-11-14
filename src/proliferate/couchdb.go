@@ -6,12 +6,14 @@ import (
 	"net/http"
 )
 
+// CouchURL parses config.json and returns couch http URL
 func (node *Node) CouchURL() string {
 	n := *node
 	c := n.Config.Couch
 	return (fmt.Sprintf("%s://%s:%s", c.Protocol, c.Host, c.Port))
 }
 
+// CouchTest test function that is going away
 func (node *Node) CouchTest() {
 	n := *node
 

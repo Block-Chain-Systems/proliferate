@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 )
 
+// Message struct used by Log and LogRaw function
 type Message struct {
 	Level    int    `json:"-"`
 	File     string `json:"file"`
@@ -83,7 +84,7 @@ func LogEmit(label string, message string) {
 	fmt.Printf("{\"%v\":%s}", label, message)
 }
 
-// LogError Directly emits error to console
+// LogRaw directly emits error to console
 func LogRaw(message Message) {
 	text := Prepare(message)
 	LogEmit(LabelSeverity(message.Level), text)

@@ -2,9 +2,13 @@
 	"network": {
 		"consensusAlgorithm": "raft",
 		"role": 2,
+		"maxPeers": 10,
+		"discoveryURL": ["http://127.0.0.1"],
 		"comments": {
 			"consensusAlgorithm": "Currently only 'raft' is available (string)",
-			"role": "Default role of node on network. '0':dynamic, '1':follow, '2':lead (integer)"
+			"role": "Default role of node on network. '0':dynamic, '1':follow, '2':lead (integer)",
+			"maxPeers": "Maximum number of concurrent peer connections (integer)",
+			"discoverURL": "Array of URLs to use when discovering peers"
 		}
 	},
 	"logging": {
