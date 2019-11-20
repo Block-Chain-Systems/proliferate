@@ -39,13 +39,19 @@ type NetworkConfig struct {
 }
 
 type StaticConfig struct {
-	IdentityFile string
-	ConfigFile   string
+	IdentityFile   string
+	IdentityFolder string
+	ConfigFile     string
+	CertFile       string
+	KeyFile        string
 }
 
 var static = StaticConfig{
-	IdentityFile: ".id/id.json",
-	ConfigFile:   "config.json",
+	IdentityFolder: ".id",
+	IdentityFile:   "id.json",
+	ConfigFile:     "config.json",
+	CertFile:       "id.pub",
+	KeyFile:        "id.pem",
 }
 
 // LoadConfig returns json as struct (TODO!)

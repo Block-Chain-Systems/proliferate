@@ -26,6 +26,7 @@ func (node *Node) LoadKeyPair() {
 }
 */
 
+// CertificateLoad attaches node certificates to n.member
 func (node *Node) CertificateLoad() {
 	n := *node
 	c := n.Config.Static

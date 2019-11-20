@@ -15,6 +15,7 @@ type Node struct {
 	Config  Config
 	Orderer Orderer
 	Peers   []PeerDetail
+	member  member
 }
 
 // PeerDetail contains details on peer
@@ -32,7 +33,6 @@ func (node *Node) Start() {
 
 	n.Config = LoadConfig()
 	n.ParseIdentity()
-
 	n.DiscoverPeers()
 
 	n.Log(Message{
@@ -71,14 +71,17 @@ func (node *Node) DownloadPeerList() {
 			Level: 4,
 			Text:  fmt.Sprintf("Downloading peer list from %v", list[i]),
 		})
-
 	}
 }
 
 // ParseIdentity returns json as struct (TODO!)
 func (node *Node) ParseIdentity() {
 	n := *node
-	file := n.Config.Static.IdentityFile
+	c := n.Config.Static
+
+	n.CertificateLoad()
+
+	file := fmt.Sprintf("%v/%v", c.IdentityFolder, c.IdentityFile)
 
 	var detail PeerDetail
 
@@ -99,7 +102,7 @@ func (node *Node) ParseIdentity() {
 
 	n.Log(Message{
 		Level: 4,
-		Text:  fmt.Sprintf("Identity found: %v", n.Detail.ID),
+		Text:  fmt.Sprintf("Identity loaded: %v", n.Detail.ID),
 	})
 
 	*node = n
