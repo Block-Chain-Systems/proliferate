@@ -1,10 +1,9 @@
 package proliferate
 
 import (
-	"fmt"
-
 	"encoding/json"
 	"os"
+	"path"
 )
 
 // Node struct
@@ -69,7 +68,7 @@ func (node *Node) DownloadPeerList() {
 	for i := range list {
 		n.Log(Message{
 			Level: 4,
-			Text:  fmt.Sprintf("Downloading peer list from %v", list[i]),
+			Text:  "Downloading peer list from %v" + list[i],
 		})
 	}
 }
@@ -81,7 +80,7 @@ func (node *Node) ParseIdentity() {
 
 	n.CertificateLoad()
 
-	file := fmt.Sprintf("%v/%v", c.IdentityFolder, c.IdentityFile)
+	file := path.Join(c.IdentityFolder, c.IdentityFile)
 
 	var detail PeerDetail
 
@@ -102,7 +101,7 @@ func (node *Node) ParseIdentity() {
 
 	n.Log(Message{
 		Level: 4,
-		Text:  fmt.Sprintf("Identity loaded: %v", n.Detail.ID),
+		Text:  "Identity loaded: " + n.Detail.ID,
 	})
 
 	*node = n

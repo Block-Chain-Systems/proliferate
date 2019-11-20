@@ -4,8 +4,8 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"io/ioutil"
+	"path"
 	//"math/big"
 )
 
@@ -26,12 +26,13 @@ func (node *Node) LoadKeyPair() {
 }
 */
 
+// CertificateLoad attaches node certificates to n.member
 func (node *Node) CertificateLoad() {
 	n := *node
 	c := n.Config.Static
 
-	certFile := fmt.Sprintf("%v/%v", c.IdentityFolder, c.CertFile)
-	keyFile := fmt.Sprintf("%v/%v", c.IdentityFolder, c.KeyFile)
+	certFile := path.Join(c.IdentityFolder, c.CertFile)
+	keyFile := path.Join(c.IdentityFolder, c.KeyFile)
 
 	cert, err := ioutil.ReadFile(certFile)
 	if err != nil {

@@ -1,9 +1,6 @@
 package proliferate
 
-import (
-	"fmt"
-	"time"
-)
+import "time"
 
 // Block records are an interface so records can be abstract
 type Block struct {
@@ -50,7 +47,7 @@ func (node *Node) PushBlock(record interface{}) {
 
 	n.Log(Message{
 		Level: 5,
-		Text:  fmt.Sprintf("Pushing block: %v", block.ID),
+		Text:  "Pushing block: " + block.ID,
 	})
 
 	n.Chain = append(n.Chain, block)

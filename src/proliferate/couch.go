@@ -12,7 +12,7 @@ import (
 func (node *Node) CouchURL() string {
 	n := *node
 	c := n.Config.Couch
-	return (fmt.Sprintf("%s://%s:%s", c.Protocol, c.Host, c.Port))
+	return c.Protocol + "://" + c.Host + ":" + c.Port
 }
 
 // CouchTest Verifies CouchDB host is responsive
@@ -34,7 +34,7 @@ func (node *Node) CouchTest() bool {
 // CouchGet returns map[string]interface of couch http.Get
 func (node *Node) CouchGet(body string) map[string]interface{} {
 	n := *node
-	request := fmt.Sprintf("%v/%v", n.CouchURL(), body)
+	request := n.CouchURL() + "/" + body
 
 	response, err := http.Get(request)
 	if err != nil {
