@@ -21,7 +21,7 @@
 			"enabled": "Enables/disables all logging. Available values (boolean)",
 			"level": "Log level, higher numbers produce more logs. (integer) Values: '0': Fatal, '1': Error, '2': Warning, '3': Notice, '4': Verbose, '5': Noisy",
 			"console": "Emit logs to console (boolean)'",
-			"file": "Log output file (string)"
+			"file": "Log output file location (string)"
 		}
 	},
 	"couchDB": {

@@ -10,6 +10,7 @@ type Config struct {
 	Logging Logging       `json:"logging"`
 	Couch   CouchConfig   `json:"couchDB"`
 	Network NetworkConfig `json:"network"`
+	Static  StaticConfig
 }
 
 // CouchConfig couchConfig populated by config.json
@@ -37,11 +38,21 @@ type NetworkConfig struct {
 	Discovery []string `json:"DiscoveryURL"`
 }
 
+type StaticConfig struct {
+	IdentityFile string
+	ConfigFile   string
+}
+
+var static = StaticConfig{
+	IdentityFile: ".id/id.json",
+	ConfigFile:   "config.json",
+}
+
 // LoadConfig returns json as struct (TODO!)
 func LoadConfig() Config {
 	var config Config
 
-	file := "config.json"
+	file := static.ConfigFile
 
 	configFile, err := os.Open(file)
 	defer configFile.Close()
@@ -54,6 +65,8 @@ func LoadConfig() Config {
 	}
 	jsonParser := json.NewDecoder(configFile)
 	jsonParser.Decode(&config)
+
+	config.Static = static
 
 	return (config)
 }

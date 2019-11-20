@@ -30,8 +30,8 @@ type PeerDetail struct {
 func (node *Node) Start() {
 	n := *node
 
-	n.ParseIdentity()
 	n.Config = LoadConfig()
+	n.ParseIdentity()
 
 	n.DiscoverPeers()
 
@@ -78,13 +78,9 @@ func (node *Node) DownloadPeerList() {
 // ParseIdentity returns json as struct (TODO!)
 func (node *Node) ParseIdentity() {
 	n := *node
-	file := ".id/id.json"
-	var detail PeerDetail
+	file := n.Config.Static.IdentityFile
 
-	n.Log(Message{
-		Level: 4,
-		Text:  "Parsing node identity in network/id",
-	})
+	var detail PeerDetail
 
 	identityFile, err := os.Open(file)
 	defer identityFile.Close()
@@ -100,6 +96,11 @@ func (node *Node) ParseIdentity() {
 
 	n.Detail = detail
 	n.ID = detail.ID
+
+	n.Log(Message{
+		Level: 4,
+		Text:  fmt.Sprintf("Identity found: %v", n.Detail.ID),
+	})
 
 	*node = n
 }
