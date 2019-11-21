@@ -50,7 +50,7 @@ var static = StaticConfig{
 	IdentityFolder: ".id",
 	IdentityFile:   "id.json",
 	ConfigFile:     "config.json",
-	CertFile:       "id.pub",
+	CertFile:       "id.cert",
 	KeyFile:        "id.pem",
 }
 

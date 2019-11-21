@@ -33,7 +33,8 @@ func (node *Node) Start() {
 	n.Config = LoadConfig()
 	n.ParseIdentity()
 
-	n.LoadPair()
+	// TODO
+	//n.LoadPair()
 
 	n.DiscoverPeers()
 
@@ -81,7 +82,7 @@ func (node *Node) ParseIdentity() {
 	n := *node
 	c := n.Config.Static
 
-	n.CertificateLoad()
+	n.IdentityCertificateLoad()
 
 	file := path.Join(c.IdentityFolder, c.IdentityFile)
 

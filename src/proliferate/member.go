@@ -1,14 +1,14 @@
 package proliferate
 
 import (
-	"crypto/rsa"
-	"crypto/tls"
-	"crypto/x509"
-	"encoding/pem"
-	"fmt"
-	"io/ioutil"
-	"path"
-	//"math/big"
+//"crypto/rsa"
+//"crypto/tls"
+//"crypto/x509"
+//"encoding/pem"
+//"fmt"
+//"io/ioutil"
+//"path"
+////"math/big"
 )
 
 /*
@@ -28,6 +28,7 @@ func (node *Node) LoadKeyPair() {
 }
 */
 
+/*
 func (node *Node) IdentityCertificates() (string, string) {
 	n := *node
 	c := n.Config.Static
@@ -94,3 +95,4 @@ func ExtractPublicKey(pemKey string) rsa.PublicKey {
 	rsaPublicKey := cert.PublicKey.(*rsa.PublicKey)
 	return *rsaPublicKey
 }
+*/

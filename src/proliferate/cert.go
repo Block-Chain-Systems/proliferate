@@ -6,7 +6,9 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"io/ioutil"
 	"math/big"
+	"path"
 	"time"
 )
 
@@ -57,4 +59,43 @@ func (node *Node) GenerateX509Pair() (string, string) {
 // TODO needs to return actual serial
 func IssueSerial() int64 {
 	return 1
+}
+
+func (node *Node) IdentityCertificates() (string, string) {
+	n := *node
+	c := n.Config.Static
+
+	certFile := path.Join(c.IdentityFolder, c.CertFile)
+	keyFile := path.Join(c.IdentityFolder, c.KeyFile)
+
+	return certFile, keyFile
+}
+
+// CertificateLoad attaches node certificates to n.member
+func (node *Node) IdentityCertificateLoad() {
+	n := *node
+
+	certFile, keyFile := n.IdentityCertificates()
+
+	cert, err := ioutil.ReadFile(certFile)
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	} else {
+		n.member.cert = string(cert)
+	}
+
+	key, err := ioutil.ReadFile(keyFile)
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	} else {
+		n.member.key = string(key)
+	}
+
+	*node = n
 }
