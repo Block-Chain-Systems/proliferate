@@ -32,6 +32,9 @@ func (node *Node) Start() {
 
 	n.Config = LoadConfig()
 	n.ParseIdentity()
+
+	n.LoadPair()
+
 	n.DiscoverPeers()
 
 	n.Log(Message{
