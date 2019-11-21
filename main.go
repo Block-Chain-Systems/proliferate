@@ -29,4 +29,6 @@ func main() {
 	//fmt.Println(node.CouchTest())
 	//fmt.Println(bc.NewID())
 	//fmt.Println(node.GenerateX509Pair())
+
+	//node.VerifyIdentity()
 }

@@ -2,6 +2,7 @@ package proliferate
 
 import (
 	"encoding/json"
+	//"fmt"
 	"os"
 	"path"
 )
@@ -80,7 +81,7 @@ func (node *Node) DownloadPeerList() {
 // ParseIdentity returns json as struct (TODO!)
 func (node *Node) ParseIdentity() {
 	n := *node
-	c := n.Config.Static
+	c := n.Config.Build
 
 	n.IdentityCertificateLoad()
 

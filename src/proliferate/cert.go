@@ -12,8 +12,10 @@ import (
 	"time"
 )
 
+// GenerateX509Pair returns X.509 key and certificate
 func (node *Node) GenerateX509Pair() (string, string) {
 	n := *node
+	y := n.Config.Build.CertExpYears
 
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -28,9 +30,9 @@ func (node *Node) GenerateX509Pair() (string, string) {
 		Bytes: x509.MarshalPKCS1PrivateKey(key),
 	})
 
-	tml := x509.Certificate{
+	template := x509.Certificate{
 		NotBefore: time.Now(),
-		NotAfter:  time.Now().AddDate(5, 0, 0),
+		NotAfter:  time.Now().AddDate(y, 0, 0),
 
 		SerialNumber: big.NewInt(IssueSerial()),
 		Subject: pkix.Name{
@@ -40,7 +42,7 @@ func (node *Node) GenerateX509Pair() (string, string) {
 		BasicConstraintsValid: true,
 	}
 
-	cert, err := x509.CreateCertificate(rand.Reader, &tml, &tml, &key.PublicKey, key)
+	cert, err := x509.CreateCertificate(rand.Reader, &template, &template, &key.PublicKey, key)
 	if err != nil {
 		n.Log(Message{
 			Level: 2,
@@ -61,9 +63,10 @@ func IssueSerial() int64 {
 	return 1
 }
 
+// IdentityCertificates returns filesystem paths to identy cert and key
 func (node *Node) IdentityCertificates() (string, string) {
 	n := *node
-	c := n.Config.Static
+	c := n.Config.Build
 
 	certFile := path.Join(c.IdentityFolder, c.CertFile)
 	keyFile := path.Join(c.IdentityFolder, c.KeyFile)
@@ -98,4 +101,45 @@ func (node *Node) IdentityCertificateLoad() {
 	}
 
 	*node = n
+}
+
+func (node *Node) VerifySignature(certPEM string, rootPEM string) {
+	n := *node
+
+	roots := x509.NewCertPool()
+	ok := roots.AppendCertsFromPEM([]byte(rootPEM))
+	if !ok {
+		n.Log(Message{
+			Level: 2,
+			Text:  "Failed to parse root certificate",
+		})
+	}
+
+	block, _ := pem.Decode([]byte(certPEM))
+	if block == nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  "failed to parse certificate PEM",
+		})
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
+	opts := x509.VerifyOptions{
+		//DNSName: "www.domain.com",
+		Roots: roots,
+	}
+
+	if _, err := cert.Verify(opts); err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
 }
