@@ -12,7 +12,8 @@ import (
 	"time"
 )
 
-// GenerateX509Pair returns X.509 key and certificate
+// GenerateX509Pair returns X.509 key and certificate based on randomly
+// generated key. Returns strings for the key and the certificate.
 func (node *Node) GenerateX509Pair() (string, string) {
 	n := *node
 	y := n.Config.Build.CertExpYears
@@ -42,7 +43,12 @@ func (node *Node) GenerateX509Pair() (string, string) {
 		BasicConstraintsValid: true,
 	}
 
-	cert, err := x509.CreateCertificate(rand.Reader, &template, &template, &key.PublicKey, key)
+	cert, err := x509.CreateCertificate(rand.Reader,
+		&template,
+		&template,
+		&key.PublicKey,
+		key)
+
 	if err != nil {
 		n.Log(Message{
 			Level: 2,
@@ -63,7 +69,8 @@ func IssueSerial() int64 {
 	return 1
 }
 
-// IdentityCertificates returns filesystem paths to identy cert and key
+// IdentityCertificates returns filesystem paths to the identity certificate
+// and key by the paths defined in n.Config.Build
 func (node *Node) IdentityCertificates() (string, string) {
 	n := *node
 	c := n.Config.Build
@@ -74,7 +81,8 @@ func (node *Node) IdentityCertificates() (string, string) {
 	return certFile, keyFile
 }
 
-// CertificateLoad attaches node certificates to n.member
+// CertificateLoad attaches the identity certificate files returned by
+// IdenityCertificates() to the running node at node.member
 func (node *Node) IdentityCertificateLoad() {
 	n := *node
 

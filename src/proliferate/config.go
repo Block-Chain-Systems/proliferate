@@ -56,7 +56,7 @@ var buildConfig = BuildConfig{
 	KeyFile:        "id.pem",
 }
 
-// LoadConfig returns json as struct (TODO!)
+// LoadConfig returns json as struct
 func LoadConfig() Config {
 	var config Config
 

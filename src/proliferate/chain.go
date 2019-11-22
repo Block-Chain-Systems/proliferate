@@ -1,6 +1,9 @@
 package proliferate
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Block records are an interface so records can be abstract
 type Block struct {
@@ -35,7 +38,7 @@ func (node *Node) orderBlock(record interface{}) Block {
 	return block
 }
 
-//PushBlock creates block and pushes record to chain
+//PushBlock pushes ordered block to the blockchain
 func (node *Node) PushBlock(record interface{}) {
 	n := *node
 
@@ -54,7 +57,7 @@ func (node *Node) PushBlock(record interface{}) {
 	*node = n
 }
 
-//Initialize starts empty chain if no record exists
+//Initialize starts empty chain if no blocks exist
 func (node *Node) Initialize() Block {
 	n := *node
 	ts := time.Now()
@@ -73,4 +76,9 @@ func (node *Node) Initialize() Block {
 	block.Hash = Hash(block)
 
 	return block
+}
+
+// TODO properly parse Block.Record
+func (node *Node) ParseRecord(block Block) string {
+	return fmt.Sprintf("%v", block.Record)
 }

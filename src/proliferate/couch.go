@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+type RequestBody struct {
+	Method string
+	Header http.Header
+	Body   string
+}
+
 // CouchURL parses config.json and returns couch http URL
 func (node *Node) CouchURL() string {
 	n := *node
@@ -63,7 +69,10 @@ func (node *Node) CouchGet(body string) map[string]interface{} {
 func (node *Node) CouchPut(body string) {
 	n := *node
 	client := &http.Client{}
-	request, err := http.NewRequest("PUT", n.CouchURL(), strings.NewReader(body))
+	request, err := http.NewRequest("PUT",
+		n.CouchURL(),
+		strings.NewReader(body))
+
 	request.ContentLength = int64(len(body))
 
 	response, err := client.Do(request)
@@ -82,7 +91,6 @@ func (node *Node) CouchPut(body string) {
 				Text:  err.Error(),
 			})
 		}
-		//fmt.Println("The calculated length is:", len(string(contents)), "for the url:", url)
 		//fmt.Println("   ", response.StatusCode)
 
 		hdr := response.Header
@@ -91,4 +99,34 @@ func (node *Node) CouchPut(body string) {
 		}
 		fmt.Println(contents)
 	}
+}
+
+// TODO push blocks to couchdb
+
+func (node *Node) CouchPush(block Block) {
+	n := *node
+
+	req := RequestBody{
+		Method: "POST",
+		Header: http.Header{},
+		Body:   n.ParseRecord(block),
+	}
+
+	// TODO Push the block
+	fmt.Println(req)
+
+}
+
+func (node *Node) CouchRequest(req RequestBody) {
+	n := *node
+	url := n.CouchURL()
+
+	req.Method = strings.ToUpper(req.Method)
+
+	// TODO Push the block
+	fmt.Println(url, req)
+
+	//method = strings.ToUpper(body.Method)
+
+	//req, err := http.NewRequest(method
 }
