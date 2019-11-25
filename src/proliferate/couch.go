@@ -114,7 +114,6 @@ func (node *Node) CouchPush(block Block) {
 
 	// TODO Push the block
 	fmt.Println(req)
-
 }
 
 func (node *Node) CouchRequest(req RequestBody) {

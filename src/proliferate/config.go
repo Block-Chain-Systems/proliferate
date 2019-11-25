@@ -7,10 +7,11 @@ import (
 
 // Config root config populated by config.json
 type Config struct {
-	Logging Logging       `json:"logging"`
-	Couch   CouchConfig   `json:"couchDB"`
-	Network NetworkConfig `json:"network"`
-	Build   BuildConfig
+	Logging  Logging       `json:"logging"`
+	Couch    CouchConfig   `json:"couchDB"`
+	Network  NetworkConfig `json:"network"`
+	Instance Instance      `json:"node"`
+	Build    BuildConfig
 }
 
 // CouchConfig couchConfig populated by config.json
@@ -36,6 +37,10 @@ type NetworkConfig struct {
 	Role      int      `json:"role"`
 	MaxPeers  int      `json:"maxPeers"`
 	Discovery []string `json:"DiscoveryURL"`
+}
+
+type Instance struct {
+	MemoryLimit int `json:"memoryLimit"`
 }
 
 type BuildConfig struct {

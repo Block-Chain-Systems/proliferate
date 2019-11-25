@@ -54,6 +54,40 @@ func (node *Node) PushBlock(record interface{}) {
 	})
 
 	n.Chain = append(n.Chain, block)
+
+	n.pushToStorage(block)
+
+	*node = n
+
+	// TODO EnforceMemoryLimit enable and test
+}
+
+// Pushes block to chain on physical storage
+func (node *Node) pushToStorage(block Block) {
+	n := *node
+	c := n.Config
+
+	// TODO record interface logic should be called here
+
+	if c.Couch.Enabled == true {
+		n.CouchPut(fmt.Sprintf("%v", block.Record))
+	}
+}
+
+// BlockCount returns count of chains on block
+func (node *Node) BlockCount() {
+	//TODO count blocks on chain outside of blocks in memory
+}
+
+// EnforceMemoryLimit prevents blocks in memory to exceed limit
+func (node *Node) EnforceMemoryLimit() {
+	n := *node
+	c := n.Config.Instance
+
+	if cap(n.Chain) > c.MemoryLimit && c.MemoryLimit != 0 {
+		n.Chain = append(n.Chain[:0], n.Chain[1:]...)
+	}
+
 	*node = n
 }
 
