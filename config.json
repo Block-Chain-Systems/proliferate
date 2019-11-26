@@ -29,6 +29,7 @@
 		"host": "127.0.0.1",
 		"port": "5984",
 		"protocol": "http",
+		"database": "proliferate",
 		"comments": {
 			"enabled": "Enables/disables CouchDB for block storage",
 			"host": "CouchDB host domain or IP",

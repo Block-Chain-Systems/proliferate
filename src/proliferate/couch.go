@@ -18,7 +18,7 @@ type RequestBody struct {
 func (node *Node) CouchURL() string {
 	n := *node
 	c := n.Config.Couch
-	return c.Protocol + "://" + c.Host + ":" + c.Port
+	return c.Protocol + "://" + c.Host + ":" + c.Port + "/" + c.Database
 }
 
 // CouchTest Verifies CouchDB host is responsive
@@ -73,6 +73,8 @@ func (node *Node) CouchPut(body string) {
 		n.CouchURL(),
 		strings.NewReader(body))
 
+	//fmt.Println(n.CouchURL(), strings.NewReader(body))
+
 	request.ContentLength = int64(len(body))
 
 	response, err := client.Do(request)
@@ -93,15 +95,29 @@ func (node *Node) CouchPut(body string) {
 		}
 		//fmt.Println("   ", response.StatusCode)
 
-		hdr := response.Header
-		for key, value := range hdr {
-			fmt.Println("   ", key, ":", value)
+		if response.StatusCode != 200 {
+			n.Log(Message{
+				Level: 1,
+				Text:  string(contents),
+			})
 		}
-		fmt.Println(contents)
+
+		//hdr := response.Header
+		//for key, value := range hdr {
+		//	fmt.Println("   ", key, ":", value)
+		//}
+		//fmt.Println(string(contents))
 	}
 }
 
 // TODO push blocks to couchdb
+
+func (node *Node) CreateDatabase(name string) {
+	n := *node
+
+	// TODO exists logic
+	n.CouchPut(name)
+}
 
 func (node *Node) CouchPush(block Block) {
 	n := *node

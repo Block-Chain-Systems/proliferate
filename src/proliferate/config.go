@@ -18,6 +18,7 @@ type Config struct {
 type CouchConfig struct {
 	Enabled  bool   `json:"enabled"`
 	Host     string `json:"host"`
+	Database string `json:"database"`
 	Port     string `json:"port"`
 	Protocol string `json:"protocol"`
 }
