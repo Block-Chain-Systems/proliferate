@@ -33,7 +33,6 @@ func (node *Node) Log(message Message) {
 	c := runtime.Callers(2, pc)
 	frames := runtime.CallersFrames(pc[:c])
 	frame, _ := frames.Next()
-
 	caller, _ := frames.Next()
 
 	message.File = frame.File

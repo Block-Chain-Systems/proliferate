@@ -21,6 +21,7 @@ type CouchConfig struct {
 	Database string `json:"database"`
 	Port     string `json:"port"`
 	Protocol string `json:"protocol"`
+	State    CouchState
 }
 
 // Logging logging read from config.json

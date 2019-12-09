@@ -65,13 +65,20 @@ func (node *Node) PushBlock(record interface{}) {
 // Pushes block to chain on physical storage
 func (node *Node) pushToStorage(block Block) {
 	n := *node
-	c := n.Config
+	//c := n.Config
+
+	if n.DBExists() != true {
+		n.Log(Message{
+			Level: 2,
+			Text:  "Cannot find couchDB database or couchDB not running",
+		})
+	}
 
 	// TODO record interface logic should be called here
 
-	if c.Couch.Enabled == true {
-		n.CouchPut(fmt.Sprintf("%v", block.Record))
-	}
+	//if c.Couch.Enabled == true {
+	//	n.CouchPut(fmt.Sprintf("%v", block.Record))
+	//}
 }
 
 // BlockCount returns count of chains on block

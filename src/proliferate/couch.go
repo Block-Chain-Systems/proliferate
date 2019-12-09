@@ -1,6 +1,7 @@
 package proliferate
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +13,10 @@ type RequestBody struct {
 	Method string
 	Header http.Header
 	Body   string
+}
+
+type CouchState struct {
+	DBExists bool
 }
 
 // CouchURL parses config.json and returns couch http URL
@@ -30,6 +35,36 @@ func (node *Node) CouchTest() bool {
 		return true
 	}
 
+	return false
+}
+
+func (node *Node) DBExists() bool {
+	n := *node
+	c := n.Config.Couch
+
+	if c.State.DBExists == true {
+		return true
+	}
+
+	res := n.CouchRequest(RequestBody{
+		Method: "GET",
+		Body:   "/" + c.Database,
+	})
+
+	if res == nil {
+		return false
+	}
+
+	defer res.Body.Close()
+	test, _ := ioutil.ReadAll(res.Body)
+
+	fmt.Println(test)
+
+	//for _, v := range list {
+	//	fmt.Println(v)
+	//}
+
+	*node = n
 	return false
 }
 
@@ -74,6 +109,8 @@ func (node *Node) CouchPut(body string) {
 		strings.NewReader(body))
 
 	//fmt.Println(n.CouchURL(), strings.NewReader(body))
+	//fmt.Println(n.CouchURL())
+	//fmt.Println("body", body)
 
 	request.ContentLength = int64(len(body))
 
@@ -132,16 +169,37 @@ func (node *Node) CouchPush(block Block) {
 	fmt.Println(req)
 }
 
-func (node *Node) CouchRequest(req RequestBody) {
+func (node *Node) CouchRequest(args RequestBody) *http.Response {
 	n := *node
 	url := n.CouchURL()
+	body := []byte(args.Body)
+	client := &http.Client{}
 
-	req.Method = strings.ToUpper(req.Method)
+	args.Method = strings.ToUpper(args.Method)
 
-	// TODO Push the block
-	fmt.Println(url, req)
+	n.Log(Message{
+		Level: 5,
+		Text:  "Calling CouchDB @" + url,
+	})
 
-	//method = strings.ToUpper(body.Method)
+	req, reqErr := http.NewRequest(args.Method, url, bytes.NewBuffer(body))
 
-	//req, err := http.NewRequest(method
+	if reqErr != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  reqErr.Error(),
+		})
+	}
+
+	res, resErr := client.Do(req)
+
+	if resErr != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  resErr.Error(),
+		})
+	}
+
+	//fmt.Println(res)
+	return res
 }
