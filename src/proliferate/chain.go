@@ -1,6 +1,7 @@
 package proliferate
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -55,7 +56,13 @@ func (node *Node) PushBlock(record interface{}) {
 
 	n.Chain = append(n.Chain, block)
 
-	n.pushToStorage(block)
+	err := n.pushToStorage(block)
+	if err != nil {
+		n.Log(Message{
+			Level: 1,
+			Text:  err.Error(),
+		})
+	}
 
 	*node = n
 
@@ -63,22 +70,29 @@ func (node *Node) PushBlock(record interface{}) {
 }
 
 // Pushes block to chain on physical storage
-func (node *Node) pushToStorage(block Block) {
+func (node *Node) pushToStorage(block Block) error {
 	n := *node
-	//c := n.Config
+	c := n.Config.Couch
+
+	if c.Enabled != true {
+		return errors.New("Cannot push record: CouchDB is not enabled")
+	}
 
 	if n.DBExists() != true {
-		n.Log(Message{
-			Level: 2,
-			Text:  "Cannot find couchDB database or couchDB not running",
-		})
+		return errors.New("CouchDB unavailable not running")
 	}
 
 	// TODO record interface logic should be called here
 
-	//if c.Couch.Enabled == true {
-	//	n.CouchPut(fmt.Sprintf("%v", block.Record))
-	//}
+	err := n.CouchReq(fmt.Sprintf("%v", block.Record), "POST")
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
+	return nil
 }
 
 // BlockCount returns count of chains on block
