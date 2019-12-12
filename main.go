@@ -22,6 +22,6 @@ func main() {
 	testBlock := `{"Your":"Mom"}`
 	node.PushBlock(testBlock)
 
-	//bc.DumpChain(node.Chain)
+	bc.DumpChain(node.Chain)
 	//node.VerifyIdentity()
 }

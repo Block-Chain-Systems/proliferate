@@ -148,6 +148,8 @@ func (node *Node) Initialize() Block {
 
 	block.Hash = Hash(block)
 
+	n.pushToStorage(block)
+
 	return block
 }
 
