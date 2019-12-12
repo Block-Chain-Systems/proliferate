@@ -10,7 +10,7 @@ import (
 
 // Block records are an interface so records can be abstract
 type Block struct {
-	ID           string                 `json:"id"`
+	ID           string                 `json:"_id"`
 	Serial       int                    `json:"serial"`
 	Timestamp    string                 `json:"timestamp"`
 	Record       map[string]interface{} `json:"record"`

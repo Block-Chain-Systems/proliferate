@@ -17,12 +17,11 @@ func main() {
 	node := bc.Node{}
 
 	node.Start()
-	node.PushBlock("{\"initial\":\"block\"}")
+	node.PushBlock(`{"initial":"block"}`)
 
-	testBlock := "{\"Your\":\"Mom\"}"
+	testBlock := `{"Your":"Mom"}`
 	node.PushBlock(testBlock)
 
 	//bc.DumpChain(node.Chain)
-
 	//node.VerifyIdentity()
 }
