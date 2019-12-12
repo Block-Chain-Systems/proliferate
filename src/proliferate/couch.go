@@ -74,6 +74,14 @@ func (node *Node) DBExists() bool {
 	return false
 }
 
+/*
+func (node *Node) PrepareBlock(b Block) string {
+		"\"record\":\":" + fmt.Sprintf("%v", b.Record) + "," +
+		"\"hash\":\"" + b.Hash + "\"," +
+		"\"hashPrevious\"" + b.HashPrevious + "\"}"
+}
+*/
+
 //func (node *Node) InitialzeDatabase() {
 //	n.CouchPut("proliferate")
 //}
@@ -139,15 +147,17 @@ func (node *Node) CreateDatabase(name string) {
 
 func (node *Node) CouchPush(block Block) {
 	n := *node
+	record := n.MarshalBlock(block)
 
-	req := RequestBody{
-		Method: "POST",
-		Header: http.Header{},
-		Body:   n.ParseRecord(block),
+	//err := n.CouchReq(fmt.Sprintf("%v", block.Record), "POST")
+	err := n.CouchReq(fmt.Sprintf("%v", record), "POST")
+	if err != nil {
+		n.Log(Message{
+			Level: 1,
+			Text:  err.Error(),
+		})
 	}
 
-	// TODO Push the block
-	fmt.Println(req)
 }
 
 func (node *Node) CouchRequest(args RequestBody) *http.Response {
@@ -160,7 +170,7 @@ func (node *Node) CouchRequest(args RequestBody) *http.Response {
 
 	n.Log(Message{
 		Level: 5,
-		Text:  "Calling CouchDB @" + url,
+		Text:  "Calling CouchDB: " + url,
 	})
 
 	req, reqErr := http.NewRequest(args.Method, url, bytes.NewBuffer(body))

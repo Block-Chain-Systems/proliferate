@@ -4,25 +4,37 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"encoding/json"
 )
 
 // Block records are an interface so records can be abstract
 type Block struct {
-	ID           string      `json:"id"`
-	Serial       int         `json:"serial"`
-	Timestamp    string      `json:"timestamp"`
-	Record       interface{} `json:"record"`
-	Hash         string      `json:"hash"`
-	HashPrevious string      `json:"hashPrevious"`
+	ID           string                 `json:"id"`
+	Serial       int                    `json:"serial"`
+	Timestamp    string                 `json:"timestamp"`
+	Record       map[string]interface{} `json:"record"`
+	Hash         string                 `json:"hash"`
+	HashPrevious string                 `json:"hashPrevious"`
 }
 
 // Chain as a slice of blocks
 type Chain []Block
 
 //orderBlock returns record with new Block{} data from orderer
-func (node *Node) orderBlock(record interface{}) Block {
+func (node *Node) orderBlock(record string) Block {
+	var raw map[string]interface{}
+
 	n := *node
 	ts := time.Now()
+
+	err := json.Unmarshal([]byte(record), &raw)
+	if err != nil {
+		n.Log(Message{
+			Level: 1,
+			Text:  err.Error(),
+		})
+	}
 
 	lastBlock := n.Orderer.LastBlock(&n.Chain)
 
@@ -30,7 +42,7 @@ func (node *Node) orderBlock(record interface{}) Block {
 		ID:           NewID(),
 		Serial:       node.Orderer.SerialNext(&n.Chain),
 		Timestamp:    ts.String(),
-		Record:       record,
+		Record:       raw,
 		HashPrevious: lastBlock.Hash,
 	}
 
@@ -40,7 +52,7 @@ func (node *Node) orderBlock(record interface{}) Block {
 }
 
 //PushBlock pushes ordered block to the blockchain
-func (node *Node) PushBlock(record interface{}) {
+func (node *Node) PushBlock(record string) {
 	n := *node
 
 	if len(n.Chain) == 0 {
@@ -48,6 +60,10 @@ func (node *Node) PushBlock(record interface{}) {
 	}
 
 	block := n.orderBlock(record)
+
+	//fmt.Println("\n\n\n----PrepareBlock----")
+	//fmt.Println(n.PrepareBlock(block))
+	//fmt.Println("----/PrepareBlock----\n\n\n")
 
 	n.Log(Message{
 		Level: 5,
@@ -69,6 +85,11 @@ func (node *Node) PushBlock(record interface{}) {
 	// TODO EnforceMemoryLimit enable and test
 }
 
+func (node *Node) MarshalBlock(block Block) string {
+	json, _ := json.Marshal(block)
+	return string(json)
+}
+
 // Pushes block to chain on physical storage
 func (node *Node) pushToStorage(block Block) error {
 	n := *node
@@ -76,24 +97,21 @@ func (node *Node) pushToStorage(block Block) error {
 
 	if c.Enabled != true {
 		return errors.New("Cannot push record: CouchDB is not enabled")
+	} else {
+		n.CouchPush(block)
 	}
 
 	if n.DBExists() != true {
 		return errors.New("CouchDB unavailable not running")
 	}
 
-	// TODO record interface logic should be called here
-
-	err := n.CouchReq(fmt.Sprintf("%v", block.Record), "POST")
-	if err != nil {
-		n.Log(Message{
-			Level: 2,
-			Text:  err.Error(),
-		})
-	}
-
+	// TODO record interface logic should be considered here
 	return nil
 }
+
+//func (node *Node) PrepareBlock(block Block) string {
+//
+//}
 
 // BlockCount returns count of chains on block
 func (node *Node) BlockCount() {
