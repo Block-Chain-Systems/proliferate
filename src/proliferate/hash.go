@@ -41,5 +41,8 @@ func VerifyHash(block Block, hash string) bool {
 		return true
 	}
 
+	fmt.Println(hash)
+	fmt.Println(blockHash)
+
 	return false
 }

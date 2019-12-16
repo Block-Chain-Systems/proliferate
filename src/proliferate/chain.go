@@ -22,8 +22,12 @@ type Block struct {
 type Chain []Block
 
 //orderBlock returns record with new Block{} data from orderer
-func (node *Node) orderBlock(record string) Block {
+func (node *Node) orderBlock(record string, id string) Block {
 	var raw map[string]interface{}
+
+	if id == "" {
+		id = NewID()
+	}
 
 	n := *node
 	ts := time.Now()
@@ -39,7 +43,7 @@ func (node *Node) orderBlock(record string) Block {
 	lastBlock := n.Orderer.LastBlock(&n.Chain)
 
 	block := Block{
-		ID:           NewID(),
+		ID:           id,
 		Serial:       node.Orderer.SerialNext(&n.Chain),
 		Timestamp:    ts.String(),
 		Record:       raw,
@@ -52,14 +56,14 @@ func (node *Node) orderBlock(record string) Block {
 }
 
 //PushBlock pushes ordered block to the blockchain
-func (node *Node) PushBlock(record string) {
+func (node *Node) PushBlock(record string, id string) {
 	n := *node
 
 	if len(n.Chain) == 0 {
 		n.Chain = append(n.Chain, n.Initialize())
 	}
 
-	block := n.orderBlock(record)
+	block := n.orderBlock(record, id)
 
 	//fmt.Println("\n\n\n----PrepareBlock----")
 	//fmt.Println(n.PrepareBlock(block))

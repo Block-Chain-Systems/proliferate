@@ -74,14 +74,6 @@ func (node *Node) DBExists() bool {
 	return false
 }
 
-/*
-func (node *Node) PrepareBlock(b Block) string {
-		"\"record\":\":" + fmt.Sprintf("%v", b.Record) + "," +
-		"\"hash\":\"" + b.Hash + "\"," +
-		"\"hashPrevious\"" + b.HashPrevious + "\"}"
-}
-*/
-
 //func (node *Node) InitialzeDatabase() {
 //	n.CouchPut("proliferate")
 //}
