@@ -46,3 +46,27 @@ func VerifyHash(block Block, hash string) bool {
 
 	return false
 }
+
+// VerifyByPrevious verifies block hash by it's serial
+func (node *Node) VerifyByPrevious(serial int) bool {
+	n := *node
+	prev := len(n.Chain) - 2
+	//valPrev := ValueString(n.Chain[prev])
+
+	if serial == 0 {
+		serial = len(n.Chain) - 1
+	}
+	//valSerial := ValueString(n.Chain[serial])
+
+	if Hash(n.Chain[prev]) == n.Chain[serial].HashPrevious {
+		return true
+	}
+
+	return false
+}
+
+func (node *Node) VerifyLastBlock() bool {
+	n := *node
+
+	return n.VerifyByPrevious(0)
+}

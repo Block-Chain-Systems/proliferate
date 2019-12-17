@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -123,11 +124,30 @@ func (node *Node) CouchReq(body string, method string) error {
 
 	responseBody, _ := ioutil.ReadAll(res.Body)
 
-	if res.Status != "200" {
+	if n.StatusCheck(res.Status) == true {
 		return errors.New(string(responseBody) + ": " + body)
 	}
 
 	return nil
+}
+
+func (node *Node) StatusCheck(code string) bool {
+	n := *node
+	code = code[0:3]
+
+	value, err := strconv.Atoi(code)
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
+	if value >= 200 && value <= 202 {
+		return true
+	}
+
+	return false
 }
 
 func (node *Node) CreateDatabase(name string) {
@@ -149,7 +169,6 @@ func (node *Node) CouchPush(block Block) {
 			Text:  err.Error(),
 		})
 	}
-
 }
 
 func (node *Node) CouchRequest(args RequestBody) *http.Response {
