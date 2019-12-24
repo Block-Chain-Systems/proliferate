@@ -15,10 +15,19 @@ type RequestBody struct {
 	Method string
 	Header http.Header
 	Body   string
+	Path   string
 }
 
 type CouchState struct {
 	DBExists bool
+}
+
+type CouchDocumentList struct {
+	Rows []CouchDocumentDetail `json:"rows"`
+}
+
+type CouchDocumentDetail struct {
+	ID string `json:"id"`
 }
 
 // CouchURL parses config.json and returns couch http URL
@@ -76,6 +85,7 @@ func (node *Node) DBExists() bool {
 }
 
 //func (node *Node) InitialzeDatabase() {
+//	n := *node
 //	n.CouchPut("proliferate")
 //}
 
@@ -83,6 +93,8 @@ func (node *Node) DBExists() bool {
 func (node *Node) CouchGet(body string) map[string]interface{} {
 	n := *node
 	request := n.CouchURL() + "/" + body
+
+	fmt.Println(request)
 
 	response, err := http.Get(request)
 	if err != nil {
@@ -105,6 +117,48 @@ func (node *Node) CouchGet(body string) map[string]interface{} {
 	_ = json.Unmarshal([]byte(responseData), &data)
 
 	return data
+}
+
+// Returns slice of document IDs TODO at cursor
+func (node *Node) LoadChainFromStorage() []string {
+	n := *node
+	var docs CouchDocumentList
+	var set []string
+
+	res := n.CouchRaw("/_all_docs")
+	json.Unmarshal([]byte(res), &docs)
+
+	for _, v := range docs.Rows {
+		set = append(set, v.ID)
+	}
+
+	return set
+}
+
+// CouchGet returns map[string]interface of couch http.Get
+func (node *Node) CouchRaw(body string) string {
+	n := *node
+	request := n.CouchURL() + "/" + body
+
+	response, err := http.Get(request)
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
+	responseData, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		n.Log(Message{
+			Level: 2,
+			Text:  err.Error(),
+		})
+	}
+
+	//data := make(map[string]interface{})
+	//_ = json.Unmarshal([]byte(responseData), &data)
+	return string(responseData)
 }
 
 func (node *Node) CouchReq(body string, method string) error {

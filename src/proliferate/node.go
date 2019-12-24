@@ -34,6 +34,10 @@ func (node *Node) Start() {
 	n.Config = LoadConfig()
 	n.ParseIdentity()
 
+	//	if n.Config.Couch.Enabled == true {
+	//		n.Chain = n.LoadChainFromStorage()
+	//	}
+
 	// TODO
 	//n.LoadPair()
 

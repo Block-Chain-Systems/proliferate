@@ -17,15 +17,16 @@ func main() {
 	node := bc.Node{}
 
 	node.Start()
-	node.PushBlock(`{"initial":"block"}`, "")
+	node.PushRecord(`{"initial":"block"}`)
 
 	testBlock := `{"Your":"Mom"}`
-	node.PushBlock(testBlock, "")
+	node.PushRecord(testBlock)
 
 	bc.DumpChain(node.Chain)
 
 	fmt.Println(node.VerifyLastBlock())
 	//node.VerifyIdentity()
+	node.LoadChainFromStorage()
 
 	/*
 		testRecord := make(map[string]interface{})

@@ -55,6 +55,15 @@ func (node *Node) orderBlock(record string, id string) Block {
 	return block
 }
 
+//PushRecord calls PushBlock to push record as block to blockchain
+func (node *Node) PushRecord(record string) {
+	n := *node
+
+	n.PushBlock(record, "")
+
+	*node = n
+}
+
 //PushBlock pushes ordered block to the blockchain
 func (node *Node) PushBlock(record string, id string) {
 	n := *node

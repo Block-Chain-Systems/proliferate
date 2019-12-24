@@ -47,7 +47,8 @@ func VerifyHash(block Block, hash string) bool {
 	return false
 }
 
-// VerifyByPrevious verifies block hash by it's serial
+// VerifyByPrevious verifies block hash by it's serial against the hash
+// of the previous block. (Verifies last block on the chain if argument is 0)
 func (node *Node) VerifyByPrevious(serial int) bool {
 	n := *node
 	prev := len(n.Chain) - 2
@@ -65,6 +66,7 @@ func (node *Node) VerifyByPrevious(serial int) bool {
 	return false
 }
 
+// VerifyLastBlock verifies last block on the chain against previous block
 func (node *Node) VerifyLastBlock() bool {
 	n := *node
 
