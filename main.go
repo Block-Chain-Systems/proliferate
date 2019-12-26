@@ -24,9 +24,11 @@ func main() {
 
 	bc.DumpChain(node.Chain)
 
-	fmt.Println(node.VerifyLastBlock())
+	//fmt.Println(node.VerifyLastBlock())
+	fmt.Println(node.LoadDocumentsFromStorage())
+
 	//node.VerifyIdentity()
-	node.LoadChainFromStorage()
+	//fmt.Println(node.LoadIDsFromStorage())
 
 	/*
 		testRecord := make(map[string]interface{})

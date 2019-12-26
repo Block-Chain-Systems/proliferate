@@ -27,7 +27,9 @@ type CouchDocumentList struct {
 }
 
 type CouchDocumentDetail struct {
-	ID string `json:"id"`
+	ID     string                 `json:"id"`
+	Serial int                    `json:"serial"`
+	Record map[string]interface{} `json:"record"`
 }
 
 // CouchURL parses config.json and returns couch http URL
@@ -49,6 +51,7 @@ func (node *Node) CouchTest() bool {
 	return false
 }
 
+// DBExists returns true if couchDB is found
 func (node *Node) DBExists() bool {
 	n := *node
 	c := n.Config.Couch
@@ -120,7 +123,7 @@ func (node *Node) CouchGet(body string) map[string]interface{} {
 }
 
 // Returns slice of document IDs TODO at cursor
-func (node *Node) LoadChainFromStorage() []string {
+func (node *Node) LoadIDsFromStorage() []string {
 	n := *node
 	var docs CouchDocumentList
 	var set []string
@@ -133,6 +136,26 @@ func (node *Node) LoadChainFromStorage() []string {
 	}
 
 	return set
+}
+
+//  LoadDocumentsFromStorage returns documents TODO at cursor
+func (node *Node) LoadDocumentsFromStorage() CouchDocumentList {
+	n := *node
+	var docs CouchDocumentList
+
+	if n.DBExists() != true {
+		n.Log(Message{
+			Level: 1,
+			Text:  "Unable to load chain from storage",
+		})
+
+		return docs
+	}
+
+	res := n.CouchRaw("/_all_docs?include_docs=true")
+	json.Unmarshal([]byte(res), &docs)
+
+	return docs
 }
 
 // CouchGet returns map[string]interface of couch http.Get
