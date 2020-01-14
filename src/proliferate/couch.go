@@ -11,6 +11,16 @@ import (
 	"strings"
 )
 
+type Record struct {
+	id           string `json:"_id"`
+	rev          string `json:"_rev"`
+	serial       int    `json:"serial"`
+	timestamp    string `json:"timestamp"`
+	record       string `json:"record"`
+	hash         string `json:"hash"`
+	hashPrevious string `json:"hashPrevious"`
+}
+
 type RequestBody struct {
 	Method string
 	Header http.Header
@@ -27,9 +37,57 @@ type CouchDocumentList struct {
 }
 
 type CouchDocumentDetail struct {
-	ID     string                 `json:"id"`
-	Serial int                    `json:"serial"`
-	Record map[string]interface{} `json:"record"`
+	ID        string                 `json:"_id"`
+	Serial    int                    `json:"serial"`
+	Record    map[string]interface{} `json:"record"`
+	Timestamp string                 `json:"timestamp"`
+}
+
+type CouchChanges struct {
+	ID      string              `json:"_id"`
+	results map[int]CouchChange `json:"results"`
+}
+
+type CouchChange struct {
+	ID string `json:"id"`
+}
+
+type CouchQueryResults struct {
+	Results []CouchQuerySeq `json:"results"`
+}
+
+type CouchQuerySeq struct {
+	Seq string `json:"seq"`
+	ID  string `json:"id"`
+}
+
+// LastBlockFromStorage fetches last block from storage
+func (node *Node) LastBlockFromStorage() Block {
+	n := *node
+	res := n.CouchRaw("_changes?descending=true&limit=1")
+
+	var record CouchQueryResults
+
+	fmt.Println("----")
+	fmt.Println(res, "\n")
+	_ = json.Unmarshal([]byte(res), &record)
+
+	id := record.Results[0].ID
+	block := n.LoadBlockFromStorage(id)
+
+	return block
+}
+
+// LoadBlockFromStorage returns block from CouchDB by id
+func (node *Node) LoadBlockFromStorage(id string) Block {
+	n := *node
+
+	var block Block
+
+	res := n.CouchRaw("/" + id)
+	_ = json.Unmarshal([]byte(res), &block)
+
+	return block
 }
 
 // CouchURL parses config.json and returns couch http URL
@@ -138,6 +196,19 @@ func (node *Node) LoadIDsFromStorage() []string {
 	return set
 }
 
+func (node *Node) LoadChainFromStorage() {
+	n := *node
+
+	ids := n.LoadIDsFromStorage()
+
+	for _, v := range ids {
+		//fmt.Println(i, v)
+		fmt.Println(n.CouchRaw("/" + v))
+		// TODO Structure the records you are here!
+	}
+}
+
+/*
 //  LoadDocumentsFromStorage returns documents TODO at cursor
 func (node *Node) LoadDocumentsFromStorage() CouchDocumentList {
 	n := *node
@@ -157,6 +228,7 @@ func (node *Node) LoadDocumentsFromStorage() CouchDocumentList {
 
 	return docs
 }
+*/
 
 // CouchGet returns map[string]interface of couch http.Get
 func (node *Node) CouchRaw(body string) string {

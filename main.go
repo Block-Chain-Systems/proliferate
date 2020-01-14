@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 
 	bc "./src/proliferate"
 )
@@ -25,8 +25,12 @@ func main() {
 	bc.DumpChain(node.Chain)
 
 	//fmt.Println(node.VerifyLastBlock())
-	fmt.Println(node.LoadDocumentsFromStorage())
+	//fmt.Println(node.LoadDocumentsFromStorage())
 
+	//fmt.Println(node.LoadIDsFromStorage)
+	node.LoadChainFromStorage()
+
+	node.LastBlockFromStorage()
 	//node.VerifyIdentity()
 	//fmt.Println(node.LoadIDsFromStorage())
 
