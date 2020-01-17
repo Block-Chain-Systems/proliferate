@@ -93,6 +93,8 @@ func (node *Node) PushBlock(record string, id string) {
 		})
 	}
 
+	n.EnforceMemoryLimit()
+
 	*node = n
 
 	// TODO EnforceMemoryLimit enable and test
@@ -136,9 +138,11 @@ func (node *Node) EnforceMemoryLimit() {
 	n := *node
 	c := n.Config.Instance
 
-	if cap(n.Chain) > c.MemoryLimit && c.MemoryLimit != 0 {
+	//if cap(n.Chain) > c.MemoryLimit && c.MemoryLimit != 0 {
+	if len(n.Chain) > c.MemoryRecordLimit {
 		n.Chain = append(n.Chain[:0], n.Chain[1:]...)
 	}
+	//fmt.Println("This is where it's breaking", c.MemoryRecordLimit)
 
 	*node = n
 }

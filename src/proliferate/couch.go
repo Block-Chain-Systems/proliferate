@@ -68,8 +68,8 @@ func (node *Node) LastBlockFromStorage() Block {
 
 	var record CouchQueryResults
 
-	fmt.Println("----")
-	fmt.Println(res, "\n")
+	//fmt.Println("----")
+	//fmt.Println(res, "\n")
 	_ = json.Unmarshal([]byte(res), &record)
 
 	id := record.Results[0].ID
@@ -134,8 +134,7 @@ func (node *Node) DBExists() bool {
 
 	defer res.Body.Close()
 	test, _ := ioutil.ReadAll(res.Body)
-
-	fmt.Println(test)
+	fmt.Println("test", test)
 
 	//for _, v := range list {
 	//	fmt.Println(v)
@@ -154,8 +153,6 @@ func (node *Node) DBExists() bool {
 func (node *Node) CouchGet(body string) map[string]interface{} {
 	n := *node
 	request := n.CouchURL() + "/" + body
-
-	fmt.Println(request)
 
 	response, err := http.Get(request)
 	if err != nil {
@@ -187,6 +184,7 @@ func (node *Node) LoadIDsFromStorage() []string {
 	var set []string
 
 	res := n.CouchRaw("/_all_docs")
+
 	json.Unmarshal([]byte(res), &docs)
 
 	for _, v := range docs.Rows {
@@ -235,12 +233,15 @@ func (node *Node) CouchRaw(body string) string {
 	n := *node
 	request := n.CouchURL() + "/" + body
 
+	//fmt.Println(request)
+
 	response, err := http.Get(request)
 	if err != nil {
 		n.Log(Message{
 			Level: 2,
 			Text:  err.Error(),
 		})
+		return ""
 	}
 
 	responseData, err := ioutil.ReadAll(response.Body)

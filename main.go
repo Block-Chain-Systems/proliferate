@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 
 	bc "./src/proliferate"
 )
@@ -17,12 +17,15 @@ func main() {
 	node := bc.Node{}
 
 	node.Start()
-	node.PushRecord(`{"initial":"block"}`)
 
-	testBlock := `{"Your":"Mom"}`
-	node.PushRecord(testBlock)
+	/*
+		node.PushRecord(`{"initial":"block"}`)
 
-	bc.DumpChain(node.Chain)
+		testBlock := `{"Your":"Mom"}`
+		node.PushRecord(testBlock)
+
+		bc.DumpChain(node.Chain)
+	*/
 
 	//fmt.Println(node.VerifyLastBlock())
 	//fmt.Println(node.LoadDocumentsFromStorage())
@@ -30,10 +33,12 @@ func main() {
 	//fmt.Println(node.LoadIDsFromStorage)
 	node.LoadChainFromStorage()
 
+	//fmt.Println(node.Config.Couch)
 	node.LastBlockFromStorage()
 	//node.VerifyIdentity()
 	//fmt.Println(node.LoadIDsFromStorage())
 
+	fmt.Println(len(node.Chain))
 	/*
 		testRecord := make(map[string]interface{})
 		testRecord["Your"] = "Mom"

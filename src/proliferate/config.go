@@ -7,6 +7,7 @@ import (
 
 // Config root config populated by config.json
 type Config struct {
+	//Node     ConfigNode    `json:"node"`
 	Logging  Logging       `json:"logging"`
 	Couch    CouchConfig   `json:"couchDB"`
 	Network  NetworkConfig `json:"network"`
@@ -42,7 +43,7 @@ type NetworkConfig struct {
 }
 
 type Instance struct {
-	MemoryLimit int `json:"memoryLimit"`
+	MemoryRecordLimit int `json:"memoryRecordLimit"`
 }
 
 type BuildConfig struct {

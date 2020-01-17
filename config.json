@@ -1,4 +1,7 @@
 {
+	"node": {
+		"memoryRecordLimit": 1000
+	},
 	"network": {
 		"consensusAlgorithm": "raft",
 		"role": 2,
