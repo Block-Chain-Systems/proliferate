@@ -11,14 +11,20 @@ import (
 	"strings"
 )
 
+//type Object struct {
+//	DBName string `json:"db_name"`
+//	PurgeSeq string `json:"purge_seq"`
+//	UpdateSeq string `json:"update_seq"`
+//}
+
 type Record struct {
-	id           string `json:"_id"`
-	rev          string `json:"_rev"`
-	serial       int    `json:"serial"`
-	timestamp    string `json:"timestamp"`
-	record       string `json:"record"`
-	hash         string `json:"hash"`
-	hashPrevious string `json:"hashPrevious"`
+	ID           string `json:"_id"`
+	Rev          string `json:"_rev"`
+	Serial       int    `json:"serial"`
+	Timestamp    string `json:"timestamp"`
+	Record       string `json:"record"`
+	Hash         string `json:"hash"`
+	HashPrevious string `json:"hashPrevious"`
 }
 
 type RequestBody struct {
@@ -33,7 +39,12 @@ type CouchState struct {
 }
 
 type CouchDocumentList struct {
-	Rows []CouchDocumentDetail `json:"rows"`
+	Rows []CouchDocumentItem `json:"rows"`
+}
+
+type CouchDocumentItem struct {
+	ID  string `json:"id"`
+	Key string `json:"key"`
 }
 
 type CouchDocumentDetail struct {
@@ -59,6 +70,15 @@ type CouchQueryResults struct {
 type CouchQuerySeq struct {
 	Seq string `json:"seq"`
 	ID  string `json:"id"`
+}
+
+type CouchQuery struct {
+	Selector map[string]map[string]string `json:"selector"`
+	Fields   []string                     `json:"fields"`
+	Sort     map[string]string            `json:"sort"`
+	Limit    int                          `json:"limit"`
+	Skip     int                          `json:"skip"`
+	Stats    bool                         `json:"execution_stats"`
 }
 
 // LastBlockFromStorage fetches last block from storage
@@ -181,6 +201,7 @@ func (node *Node) CouchGet(body string) map[string]interface{} {
 func (node *Node) LoadIDsFromStorage() []string {
 	n := *node
 	var docs CouchDocumentList
+	//var doc CouchDocumentDetail
 	var set []string
 
 	res := n.CouchRaw("/_all_docs")
@@ -191,19 +212,32 @@ func (node *Node) LoadIDsFromStorage() []string {
 		set = append(set, v.ID)
 	}
 
+	fmt.Println(res)
+
 	return set
 }
 
 func (node *Node) LoadChainFromStorage() {
 	n := *node
-
 	ids := n.LoadIDsFromStorage()
+	//count := len(ids)
+	var rec Record
 
 	for _, v := range ids {
-		//fmt.Println(i, v)
-		fmt.Println(n.CouchRaw("/" + v))
+		fmt.Println(v)
+		//fmt.Println(n.CouchRaw("/" + v))
 		// TODO Structure the records you are here!
+
+		doc := n.CouchRaw("/" + v)
+		json.Unmarshal([]byte(doc), &rec)
+		fmt.Println("doc:" + doc)
+		fmt.Println("ID:" + rec.ID + ", Serial:" + string(rec.Serial))
+		fmt.Println(rec.Serial)
+		fmt.Println("\n\n")
 	}
+	//fmt.Println("---ids----")
+	//fmt.Println(ids)
+	fmt.Println(n.Config.Instance.MemoryRecordLimit)
 }
 
 /*
@@ -255,6 +289,9 @@ func (node *Node) CouchRaw(body string) string {
 	//data := make(map[string]interface{})
 	//_ = json.Unmarshal([]byte(responseData), &data)
 	return string(responseData)
+}
+
+func (node *Node) CouchFind(args CouchQuery) {
 }
 
 func (node *Node) CouchReq(body string, method string) error {

@@ -31,9 +31,13 @@ func main() {
 	//fmt.Println(node.LoadDocumentsFromStorage())
 
 	//fmt.Println(node.LoadIDsFromStorage)
+
+	fmt.Println("\n\n--LoadChainFromStorage()--")
 	node.LoadChainFromStorage()
 
 	//fmt.Println(node.Config.Couch)
+
+	fmt.Println("\n\n--LastBlockFromStorage()--")
 	node.LastBlockFromStorage()
 	//node.VerifyIdentity()
 	//fmt.Println(node.LoadIDsFromStorage())
