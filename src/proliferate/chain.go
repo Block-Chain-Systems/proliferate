@@ -18,6 +18,10 @@ type Block struct {
 	HashPrevious string                 `json:"hashPrevious"`
 }
 
+type Blockchain struct {
+	Chain Chain `json:"docs"`
+}
+
 // Chain as a slice of blocks
 type Chain []Block
 

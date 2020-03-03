@@ -3,7 +3,7 @@ package proliferate
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	//	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -61,6 +61,49 @@ type CouchChanges struct {
 
 type CouchChange struct {
 	ID string `json:"id"`
+}
+
+type CouchDBDesc struct {
+	DBName             string             `json:"db_name"`
+	PurgeSeq           string             `json:"purge_seq"`
+	UpdateSeq          string             `json:"update_seq"`
+	Sizes              CouchDBDescSizes   `json:"sizes"`
+	Other              CouchDBDescOther   `json:"other"`
+	DocDeleteCount     int                `json:"doc_del_count"`
+	DocCount           int                `json:"doc_count"`
+	DiskSize           int                `json:"DiskSize"`
+	DiskFormatVersion  int                `json:"disk_format_version"`
+	DataSize           int                `json:"data_size"`
+	CompactRunning     bool               `json:"compact_running"`
+	Cluster            CouchDBDescCluster `json:"cluster"`
+	InstantceStartTime string             `json:"instance_start_time"`
+}
+
+type CouchDBDescSizes struct {
+	File     int `json:"file"`
+	External int `json:"external"`
+	Active   int `json:"active"`
+}
+
+type CouchDBDescOther struct {
+	DataSize int `json:"data_size"`
+}
+
+type CouchDBDescCluster struct {
+	Q int `json:"q"`
+	N int `json:"n"`
+	W int `json:"w"`
+	R int `json:"r"`
+}
+
+func (node *Node) CouchStatus() CouchDBDesc {
+	n := *node
+	res := n.CouchRaw("/")
+	var status CouchDBDesc
+
+	_ = json.Unmarshal([]byte(res), &status)
+
+	return status
 }
 
 type CouchQueryResults struct {
@@ -217,27 +260,24 @@ func (node *Node) LoadIDsFromStorage() []string {
 	return set
 }
 
+//LoadChainFromStorage loads blocks from storage
 func (node *Node) LoadChainFromStorage() {
 	n := *node
-	ids := n.LoadIDsFromStorage()
-	//count := len(ids)
-	var rec Record
 
-	for _, v := range ids {
-		fmt.Println(v)
-		//fmt.Println(n.CouchRaw("/" + v))
-		// TODO Structure the records you are here!
+	// Limit block load to n.node.memoryLimit
+	limit := n.Config.Instance.MemoryRecordLimit + 1
+	status := n.CouchStatus()
 
-		doc := n.CouchRaw("/" + v)
-		json.Unmarshal([]byte(doc), &rec)
-		fmt.Println("doc:" + doc)
-		fmt.Println("ID:" + rec.ID + ", Serial:" + string(rec.Serial))
-		fmt.Println(rec.Serial)
-		fmt.Println("\n\n")
-	}
-	//fmt.Println("---ids----")
-	//fmt.Println(ids)
-	fmt.Println(n.Config.Instance.MemoryRecordLimit)
+	// Load blocks from last block - memorylimit
+	firstSerial := status.DocCount - limit
+	arg := strconv.Itoa(firstSerial)
+
+	jsonQuery := `{"selector": { "serial": {"$gt": ` + arg + `}}}`
+	res, _ := node.CouchReq(jsonQuery, "post", "/_find")
+
+	json.Unmarshal([]byte(res), &n)
+
+	*node = n
 }
 
 /*
@@ -294,9 +334,10 @@ func (node *Node) CouchRaw(body string) string {
 func (node *Node) CouchFind(args CouchQuery) {
 }
 
-func (node *Node) CouchReq(body string, method string) error {
+func (node *Node) CouchReq(body string, method string, resource string) (string, error) {
 	n := *node
-	url := n.CouchURL()
+	url := n.CouchURL() + resource
+	method = strings.ToUpper(method)
 
 	jsonStr := []byte(body)
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
@@ -305,17 +346,21 @@ func (node *Node) CouchReq(body string, method string) error {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return errors.New(err.Error() + ": " + body)
+		//return errors.New(err.Error() + ": " + body)
+		fmt.Println(err.Error() + ": " + body)
 	}
 	defer res.Body.Close()
 
 	responseBody, _ := ioutil.ReadAll(res.Body)
+	//fmt.Println(string(responseBody))
 
-	if n.StatusCheck(res.Status) == true {
-		return errors.New(string(responseBody) + ": " + body)
-	}
+	/*
+		if n.StatusCheck(res.Status) == true {
+			return errors.New(string(responseBody) + ": " + body)
+		}
+	*/
 
-	return nil
+	return string(responseBody), nil
 }
 
 func (node *Node) StatusCheck(code string) bool {
@@ -341,7 +386,7 @@ func (node *Node) CreateDatabase(name string) {
 	n := *node
 
 	// TODO exists logic
-	n.CouchReq(name, "PUT")
+	n.CouchReq(name, "PUT", "")
 }
 
 func (node *Node) CouchPush(block Block) {
@@ -349,7 +394,7 @@ func (node *Node) CouchPush(block Block) {
 	record := n.MarshalBlock(block)
 
 	//err := n.CouchReq(fmt.Sprintf("%v", block.Record), "POST")
-	err := n.CouchReq(fmt.Sprintf("%v", record), "POST")
+	_, err := n.CouchReq(fmt.Sprintf("%v", record), "POST", "")
 	if err != nil {
 		n.Log(Message{
 			Level: 1,

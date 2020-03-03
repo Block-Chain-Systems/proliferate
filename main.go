@@ -57,4 +57,10 @@ func main() {
 		}
 		fmt.Println(bc.VerifyHash(verifyBlock, verifyBlock.Hash))
 	*/
+
+	//jq := `{"selector": { "serial": {"$gt": 40}}}`
+	//respo, _ := node.CouchReq(jq, "post", "/_find")
+	//fmt.Println(respo)
+	node.LoadChainFromStorage()
+	//fmt.Println(loadedChain)
 }

@@ -1,6 +1,6 @@
 {
 	"node": {
-		"memoryRecordLimit": 1000
+		"memoryRecordLimit": 40
 	},
 	"network": {
 		"consensusAlgorithm": "raft",

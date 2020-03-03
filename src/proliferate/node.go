@@ -11,7 +11,7 @@ import (
 type Node struct {
 	ID      string
 	Detail  PeerDetail
-	Chain   Chain
+	Chain   Chain `json:"docs"`
 	Config  Config
 	Orderer Orderer
 	Peers   []PeerDetail
