@@ -34,9 +34,10 @@ func (node *Node) Start() {
 	n.Config = LoadConfig()
 	n.ParseIdentity()
 
-	//	if n.Config.Couch.Enabled == true {
-	//		n.Chain = n.LoadChainFromStorage()
-	//	}
+	// Load blockchain from storage
+	if n.Config.Couch.Enabled == true {
+		n.LoadChainFromStorage()
+	}
 
 	// TODO
 	//n.LoadPair()

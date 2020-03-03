@@ -32,13 +32,13 @@ func main() {
 
 	//fmt.Println(node.LoadIDsFromStorage)
 
-	fmt.Println("\n\n--LoadChainFromStorage()--")
-	node.LoadChainFromStorage()
+	//fmt.Println("\n\n--LoadChainFromStorage()--")
+	//node.LoadChainFromStorage()
 
 	//fmt.Println(node.Config.Couch)
 
-	fmt.Println("\n\n--LastBlockFromStorage()--")
-	node.LastBlockFromStorage()
+	//fmt.Println("\n\n--LastBlockFromStorage()--")
+	//node.LastBlockFromStorage()
 	//node.VerifyIdentity()
 	//fmt.Println(node.LoadIDsFromStorage())
 
@@ -61,6 +61,7 @@ func main() {
 	//jq := `{"selector": { "serial": {"$gt": 40}}}`
 	//respo, _ := node.CouchReq(jq, "post", "/_find")
 	//fmt.Println(respo)
-	node.LoadChainFromStorage()
+	//node.LoadChainFromStorage()
 	//fmt.Println(loadedChain)
+	fmt.Println(node.Chain)
 }
