@@ -46,9 +46,11 @@ func (node *Node) orderBlock(record string, id string) Block {
 
 	lastBlock := n.Orderer.LastBlock(&n.Chain)
 
+	serial := lastBlock.Serial + 1
+
 	block := Block{
 		ID:           id,
-		Serial:       node.Orderer.SerialNext(&n.Chain),
+		Serial:       serial,
 		Timestamp:    ts.String(),
 		Record:       raw,
 		HashPrevious: lastBlock.Hash,
@@ -57,6 +59,17 @@ func (node *Node) orderBlock(record string, id string) Block {
 	block.Hash = Hash(block)
 
 	return block
+}
+
+func (node *Node) LastBlock() Block {
+	n := *node
+
+	// Just use last block in memory if storage disabled
+	if n.Config.Couch.Enabled != true {
+		return n.Chain[len(n.Chain)-1]
+	}
+
+	return n.LastBlockFromStorage()
 }
 
 //PushRecord calls PushBlock to push record as block to blockchain

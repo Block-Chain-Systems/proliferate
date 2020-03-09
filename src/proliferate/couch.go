@@ -124,6 +124,7 @@ type CouchQuery struct {
 	Stats    bool                         `json:"execution_stats"`
 }
 
+/*
 // LastBlockFromStorage fetches last block from storage
 func (node *Node) LastBlockFromStorage() Block {
 	n := *node
@@ -137,6 +138,33 @@ func (node *Node) LastBlockFromStorage() Block {
 
 	id := record.Results[0].ID
 	block := n.LoadBlockFromStorage(id)
+
+	return block
+}
+*/
+
+func (node *Node) LastBlockFromStorage() Block {
+	//n := *node
+	var block Block
+
+	//status := n.CouchStatus()
+
+	//serial := status.DocCount - 1
+
+	//jsonQuery := `{"selector":{"serial":` + strconv.Itoa(serial) + `}}`
+	selector := `"selector": { "serial": {"$gt":0}}`
+	sorter := `"sort": [{"serial": "desc"}]`
+	jsonQuery := `{` + selector + `,` + sorter + `}`
+	res, _ := node.CouchReq(jsonQuery, "post", "/_find?limit=1")
+
+	fmt.Println("--jsonQuery--")
+	fmt.Println(jsonQuery)
+	fmt.Println(res)
+
+	json.Unmarshal([]byte(res), &block)
+
+	fmt.Println("--block--")
+	fmt.Println(block)
 
 	return block
 }
@@ -266,6 +294,7 @@ func (node *Node) LoadChainFromStorage() {
 
 	// Limit block load to n.node.memoryLimit
 	limit := n.Config.Instance.MemoryRecordLimit + 1
+	ls := strconv.Itoa(limit)
 	status := n.CouchStatus()
 
 	// Load blocks from last block - memorylimit
@@ -273,7 +302,7 @@ func (node *Node) LoadChainFromStorage() {
 	arg := strconv.Itoa(firstSerial)
 
 	jsonQuery := `{"selector": { "serial": {"$gt": ` + arg + `}}}`
-	res, _ := node.CouchReq(jsonQuery, "post", "/_find")
+	res, _ := node.CouchReq(jsonQuery, "post", "/_find?limit="+ls)
 
 	json.Unmarshal([]byte(res), &n)
 

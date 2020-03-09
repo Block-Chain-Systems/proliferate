@@ -18,14 +18,19 @@ func main() {
 
 	node.Start()
 
-	/*
-		node.PushRecord(`{"initial":"block"}`)
+	bc.DumpChain(node.Chain)
 
-		testBlock := `{"Your":"Mom"}`
-		node.PushRecord(testBlock)
+	fmt.Println("--Before--")
+	node.PushRecord(`{"initial":"0 block"}`)
+	node.PushRecord(`{"initial":"1 block"}`)
+	node.PushRecord(`{"initial":"2 block"}`)
+	node.PushRecord(`{"initial":"3 block"}`)
+	fmt.Println("--After--")
 
-		bc.DumpChain(node.Chain)
-	*/
+	//	testBlock := `{"Your":"Mom"}`
+	//	node.PushRecord(testBlock)
+
+	//	bc.DumpChain(node.Chain)
 
 	//fmt.Println(node.VerifyLastBlock())
 	//fmt.Println(node.LoadDocumentsFromStorage())
@@ -42,7 +47,7 @@ func main() {
 	//node.VerifyIdentity()
 	//fmt.Println(node.LoadIDsFromStorage())
 
-	fmt.Println(len(node.Chain))
+	//fmt.Println(len(node.Chain))
 	/*
 		testRecord := make(map[string]interface{})
 		testRecord["Your"] = "Mom"
@@ -63,5 +68,11 @@ func main() {
 	//fmt.Println(respo)
 	//node.LoadChainFromStorage()
 	//fmt.Println(loadedChain)
-	fmt.Println(node.Chain)
+
+	//fmt.Println(node.Chain)
+	bc.DumpChain(node.Chain)
+
+	//fmt.Println(node.Orderer.LastBlock(&node.Chain))
+	fmt.Println(node.LastBlock())
+
 }
