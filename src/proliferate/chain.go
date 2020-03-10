@@ -18,10 +18,6 @@ type Block struct {
 	HashPrevious string                 `json:"hashPrevious"`
 }
 
-type Blockchain struct {
-	Chain Chain `json:"docs"`
-}
-
 // Chain as a slice of blocks
 type Chain []Block
 
@@ -61,6 +57,7 @@ func (node *Node) orderBlock(record string, id string) Block {
 	return block
 }
 
+// LastBlock returns last block from storage or memory
 func (node *Node) LastBlock() Block {
 	n := *node
 
@@ -91,10 +88,6 @@ func (node *Node) PushBlock(record string, id string) {
 
 	block := n.orderBlock(record, id)
 
-	//fmt.Println("\n\n\n----PrepareBlock----")
-	//fmt.Println(n.PrepareBlock(block))
-	//fmt.Println("----/PrepareBlock----\n\n\n")
-
 	n.Log(Message{
 		Level: 5,
 		Text:  "Pushing block: " + block.ID,
@@ -117,6 +110,7 @@ func (node *Node) PushBlock(record string, id string) {
 	// TODO EnforceMemoryLimit enable and test
 }
 
+// MarshalBlock returns block as string
 func (node *Node) MarshalBlock(block Block) string {
 	json, _ := json.Marshal(block)
 	return string(json)
@@ -129,9 +123,9 @@ func (node *Node) pushToStorage(block Block) error {
 
 	if c.Enabled != true {
 		return errors.New("Cannot push record: CouchDB is not enabled")
-	} else {
-		n.CouchPush(block)
 	}
+
+	n.CouchPush(block)
 
 	if n.DBExists() != true {
 		return errors.New("CouchDB unavailable not running")
@@ -140,10 +134,6 @@ func (node *Node) pushToStorage(block Block) error {
 	// TODO record interface logic should be considered here
 	return nil
 }
-
-//func (node *Node) PrepareBlock(block Block) string {
-//
-//}
 
 // BlockCount returns count of chains on block
 func (node *Node) BlockCount() {
@@ -187,7 +177,8 @@ func (node *Node) Initialize() Block {
 	return block
 }
 
-// TODO properly parse Block.Record
+// ParseRecord returns Block.Record as string
 func (node *Node) ParseRecord(block Block) string {
+	// TODO properly parse this
 	return fmt.Sprintf("%v", block.Record)
 }

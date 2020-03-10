@@ -3,6 +3,7 @@ package proliferate
 import (
 	"bytes"
 	"encoding/json"
+
 	//	"errors"
 	"fmt"
 	"io/ioutil"
@@ -17,6 +18,7 @@ import (
 //	UpdateSeq string `json:"update_seq"`
 //}
 
+// Record couchDB struct
 type Record struct {
 	ID           string `json:"_id"`
 	Rev          string `json:"_rev"`
@@ -27,6 +29,7 @@ type Record struct {
 	HashPrevious string `json:"hashPrevious"`
 }
 
+// RequestBody couchDB struct
 type RequestBody struct {
 	Method string
 	Header http.Header
@@ -34,19 +37,23 @@ type RequestBody struct {
 	Path   string
 }
 
+// CouchState couchDB struct
 type CouchState struct {
 	DBExists bool
 }
 
+// CouchDocumentList couchDB struct
 type CouchDocumentList struct {
 	Rows []CouchDocumentItem `json:"rows"`
 }
 
+// CouchDocumentItem couchDB struct
 type CouchDocumentItem struct {
 	ID  string `json:"id"`
 	Key string `json:"key"`
 }
 
+// CouchDocumentDetail couchDB struct
 type CouchDocumentDetail struct {
 	ID        string                 `json:"_id"`
 	Serial    int                    `json:"serial"`
@@ -54,15 +61,18 @@ type CouchDocumentDetail struct {
 	Timestamp string                 `json:"timestamp"`
 }
 
+// CouchChanges couchDB struct
 type CouchChanges struct {
 	ID      string              `json:"_id"`
-	results map[int]CouchChange `json:"results"`
+	Results map[int]CouchChange `json:"results"`
 }
 
+// CouchChange couchDB struct
 type CouchChange struct {
 	ID string `json:"id"`
 }
 
+// CouchDBDesc couchDB struct
 type CouchDBDesc struct {
 	DBName             string             `json:"db_name"`
 	PurgeSeq           string             `json:"purge_seq"`
@@ -79,16 +89,19 @@ type CouchDBDesc struct {
 	InstantceStartTime string             `json:"instance_start_time"`
 }
 
+// CouchDBDescSizes couchDB struct
 type CouchDBDescSizes struct {
 	File     int `json:"file"`
 	External int `json:"external"`
 	Active   int `json:"active"`
 }
 
+// CouchDBDescOther couchDB struct
 type CouchDBDescOther struct {
 	DataSize int `json:"data_size"`
 }
 
+// CouchDBDescCluster couchDB struct
 type CouchDBDescCluster struct {
 	Q int `json:"q"`
 	N int `json:"n"`
@@ -96,25 +109,18 @@ type CouchDBDescCluster struct {
 	R int `json:"r"`
 }
 
-func (node *Node) CouchStatus() CouchDBDesc {
-	n := *node
-	res := n.CouchRaw("/")
-	var status CouchDBDesc
-
-	_ = json.Unmarshal([]byte(res), &status)
-
-	return status
-}
-
+// CouchQueryResults couchDB struct
 type CouchQueryResults struct {
 	Results []CouchQuerySeq `json:"results"`
 }
 
+// CouchQuerySeq couchDB struct
 type CouchQuerySeq struct {
 	Seq string `json:"seq"`
 	ID  string `json:"id"`
 }
 
+// CouchQuery couchDB struct
 type CouchQuery struct {
 	Selector map[string]map[string]string `json:"selector"`
 	Fields   []string                     `json:"fields"`
@@ -143,6 +149,18 @@ func (node *Node) LastBlockFromStorage() Block {
 }
 */
 
+// CouchStatus returns couch db description as couchDBDesc
+func (node *Node) CouchStatus() CouchDBDesc {
+	n := *node
+	res := n.CouchRaw("/")
+	var status CouchDBDesc
+
+	_ = json.Unmarshal([]byte(res), &status)
+
+	return status
+}
+
+// LastBlockFromStorage returns last block from couchDB
 func (node *Node) LastBlockFromStorage() Block {
 	//n := *node
 	var block Block
@@ -268,7 +286,7 @@ func (node *Node) CouchGet(body string) map[string]interface{} {
 	return data
 }
 
-// Returns slice of document IDs TODO at cursor
+// LoadIDsFromStorage returns slice of document IDs TODO at cursor
 func (node *Node) LoadIDsFromStorage() []string {
 	n := *node
 	var docs CouchDocumentList
@@ -331,7 +349,7 @@ func (node *Node) LoadDocumentsFromStorage() CouchDocumentList {
 }
 */
 
-// CouchGet returns map[string]interface of couch http.Get
+// CouchRaw returns map[string]interface of couch http.Get
 func (node *Node) CouchRaw(body string) string {
 	n := *node
 	request := n.CouchURL() + "/" + body
@@ -360,9 +378,7 @@ func (node *Node) CouchRaw(body string) string {
 	return string(responseData)
 }
 
-func (node *Node) CouchFind(args CouchQuery) {
-}
-
+// CouchReq returns couch request results as string
 func (node *Node) CouchReq(body string, method string, resource string) (string, error) {
 	n := *node
 	url := n.CouchURL() + resource
@@ -392,6 +408,7 @@ func (node *Node) CouchReq(body string, method string, resource string) (string,
 	return string(responseBody), nil
 }
 
+// StatusCheck couchDB status as bool
 func (node *Node) StatusCheck(code string) bool {
 	n := *node
 	code = code[0:3]
@@ -411,13 +428,16 @@ func (node *Node) StatusCheck(code string) bool {
 	return false
 }
 
+/*
 func (node *Node) CreateDatabase(name string) {
 	n := *node
 
 	// TODO exists logic
 	n.CouchReq(name, "PUT", "")
 }
+*/
 
+// CouchPush pushes block to couchDB
 func (node *Node) CouchPush(block Block) {
 	n := *node
 	record := n.MarshalBlock(block)
@@ -432,6 +452,7 @@ func (node *Node) CouchPush(block Block) {
 	}
 }
 
+// CouchRequest returns http.Response
 func (node *Node) CouchRequest(args RequestBody) *http.Response {
 	n := *node
 	url := n.CouchURL()

@@ -64,7 +64,7 @@ func (node *Node) GenerateX509Pair() (string, string) {
 	return string(pemKey), string(pemCert)
 }
 
-// TODO needs to return actual serial
+// IssueSerial TODO needs to return actual serial
 func IssueSerial() int64 {
 	return 1
 }
@@ -81,7 +81,7 @@ func (node *Node) IdentityCertificates() (string, string) {
 	return certFile, keyFile
 }
 
-// CertificateLoad attaches the identity certificate files returned by
+// IdentityCertificateLoad attaches the identity certificate files returned by
 // IdenityCertificates() to the running node at node.member
 func (node *Node) IdentityCertificateLoad() {
 	n := *node
@@ -111,6 +111,7 @@ func (node *Node) IdentityCertificateLoad() {
 	*node = n
 }
 
+// VerifySignature Signature verification
 func (node *Node) VerifySignature(certPEM string, rootPEM string) {
 	n := *node
 

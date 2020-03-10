@@ -42,10 +42,12 @@ type NetworkConfig struct {
 	Discovery []string `json:"DiscoveryURL"`
 }
 
+// Instance node specific settings from config.json
 type Instance struct {
 	MemoryRecordLimit int `json:"memoryRecordLimit"`
 }
 
+// BuildConfig build specific settings from config.json
 type BuildConfig struct {
 	IdentityFile   string
 	IdentityFolder string
