@@ -69,10 +69,21 @@ func main() {
 	//node.LoadChainFromStorage()
 	//fmt.Println(loadedChain)
 
-	//fmt.Println(node.Chain)
-	bc.DumpChain(node.Chain)
+	/*
+		//fmt.Println(node.Chain)
+		bc.DumpChain(node.Chain)
 
-	//fmt.Println(node.Orderer.LastBlock(&node.Chain))
-	fmt.Println(node.LastBlock())
+		//fmt.Println(node.Orderer.LastBlock(&node.Chain))
+		fmt.Println(node.LastBlock())
+
+		fmt.Println("--NextSerialFromStorage--")
+		fmt.Println(node.NextSerialFromStorage)
+	*/
+
+	fmt.Println("LAST SERIAL:")
+	fmt.Println(node.LastSerialFromStorage())
+
+	fmt.Println("LAST BLOCK:")
+	fmt.Println(node.LastBlockFromStorage())
 
 }

@@ -29,6 +29,10 @@ type Record struct {
 	HashPrevious string `json:"hashPrevious"`
 }
 
+type CouchDocs struct {
+	Records []Block `json:"docs"`
+}
+
 // RequestBody couchDB struct
 type RequestBody struct {
 	Method string
@@ -130,6 +134,15 @@ type CouchQuery struct {
 	Stats    bool                         `json:"execution_stats"`
 }
 
+type MaxSerialKeyPair struct {
+	Rows []MaxSerialRow `json:"rows"`
+}
+
+type MaxSerialRow struct {
+	//Key   string `json:"key"`
+	MaxSerial int `json:"value"`
+}
+
 /*
 // LastBlockFromStorage fetches last block from storage
 func (node *Node) LastBlockFromStorage() Block {
@@ -160,31 +173,49 @@ func (node *Node) CouchStatus() CouchDBDesc {
 	return status
 }
 
+// Returns last serial from storage
+func (node *Node) LastSerialFromStorage() int {
+	n := *node
+	var pair MaxSerialKeyPair
+
+	res := n.CouchRaw("/_design/maxSerial/_view/max-serial")
+	json.Unmarshal([]byte(res), &pair)
+
+	return pair.Rows[0].MaxSerial
+}
+
 // LastBlockFromStorage returns last block from couchDB
 func (node *Node) LastBlockFromStorage() Block {
-	//n := *node
-	var block Block
+	n := *node
+	serial := n.LastSerialFromStorage()
 
-	//status := n.CouchStatus()
+	//var block Block
+	var docs CouchDocs
 
-	//serial := status.DocCount - 1
+	query := `{"selector":{"serial":` + strconv.Itoa(serial) + `},` +
+		`"limit":1,"sort":[{"serial":"desc"}]}`
 
-	//jsonQuery := `{"selector":{"serial":` + strconv.Itoa(serial) + `}}`
-	selector := `"selector": { "serial": {"$gt":0}}`
-	sorter := `"sort": [{"serial": "desc"}]`
-	jsonQuery := `{` + selector + `,` + sorter + `}`
-	res, _ := node.CouchReq(jsonQuery, "post", "/_find?limit=1")
+	urlString := "/_find/?reduce=true&order=desc&limit=1"
+
+	res, _ := node.CouchReq(query, "post", urlString)
 
 	fmt.Println("--jsonQuery--")
-	fmt.Println(jsonQuery)
+	fmt.Println(query)
 	fmt.Println(res)
 
-	json.Unmarshal([]byte(res), &block)
+	json.Unmarshal([]byte(res), &docs)
 
 	fmt.Println("--block--")
-	fmt.Println(block)
+	fmt.Println(docs.Records[0])
 
-	return block
+	return docs.Records[0]
+}
+
+func (node *Node) NextSerialFromStorage() int {
+	n := *node
+	//lastBlock := n.LastBlockFromStorage()
+	//return lastBlock.Serial + 1
+	return n.LastSerialFromStorage() + 1
 }
 
 // LoadBlockFromStorage returns block from CouchDB by id

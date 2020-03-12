@@ -40,8 +40,9 @@ func (node *Node) orderBlock(record string, id string) Block {
 		})
 	}
 
-	lastBlock := n.Orderer.LastBlock(&n.Chain)
-	//lastBlock := n.LastBlock()
+	//lastBlock := n.Orderer.LastBlock(&n.Chain)
+	fmt.Println("Getting last Block")
+	lastBlock := n.LastBlock()
 
 	serial := lastBlock.Serial + 1
 
