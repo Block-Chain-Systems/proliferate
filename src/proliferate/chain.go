@@ -70,16 +70,18 @@ func (node *Node) LastBlock() Block {
 }
 
 //PushRecord calls PushBlock to push record as block to blockchain
-func (node *Node) PushRecord(record string) {
+func (node *Node) PushRecord(record string) string {
 	n := *node
 
-	n.PushBlock(record, "")
+	id := n.PushBlock(record, "")
 
 	*node = n
+
+	return id
 }
 
 //PushBlock pushes ordered block to the blockchain
-func (node *Node) PushBlock(record string, id string) {
+func (node *Node) PushBlock(record string, id string) string {
 	n := *node
 
 	if len(n.Chain) == 0 {
@@ -107,7 +109,7 @@ func (node *Node) PushBlock(record string, id string) {
 
 	*node = n
 
-	// TODO EnforceMemoryLimit enable and test
+	return block.ID
 }
 
 // MarshalBlock returns block as string

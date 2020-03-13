@@ -1,7 +1,7 @@
 package main
 
 import (
-	//	"fmt"
+	"fmt"
 
 	bc "./src/proliferate"
 )
@@ -20,10 +20,10 @@ func main() {
 
 	bc.DumpChain(node.Chain)
 
-	node.PushRecord(`{"initial":"0 block"}`)
-	node.PushRecord(`{"initial":"1 block"}`)
-	node.PushRecord(`{"initial":"2 block"}`)
-	node.PushRecord(`{"initial":"3 block"}`)
+	id0 := node.PushRecord(`{"initial":"0 block"}`)
+	id1 := node.PushRecord(`{"initial":"1 block"}`)
+	id2 := node.PushRecord(`{"initial":"2 block"}`)
+	id3 := node.PushRecord(`{"initial":"3 block"}`)
 
 	//	testBlock := `{"Your":"Mom"}`
 	//	node.PushRecord(testBlock)
@@ -77,5 +77,5 @@ func main() {
 		fmt.Println("--NextSerialFromStorage--")
 		fmt.Println(node.NextSerialFromStorage)
 	*/
-
+	fmt.Println(id0, id1, id2, id3)
 }
