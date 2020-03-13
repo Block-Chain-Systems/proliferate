@@ -199,14 +199,7 @@ func (node *Node) LastBlockFromStorage() Block {
 
 	res, _ := node.CouchReq(query, "post", urlString)
 
-	fmt.Println("--jsonQuery--")
-	fmt.Println(query)
-	fmt.Println(res)
-
 	json.Unmarshal([]byte(res), &docs)
-
-	fmt.Println("--block--")
-	fmt.Println(docs.Records[0])
 
 	return docs.Records[0]
 }
