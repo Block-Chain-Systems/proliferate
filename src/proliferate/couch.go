@@ -266,8 +266,8 @@ func (node *Node) DBExists() bool {
 	}
 
 	defer res.Body.Close()
-	test, _ := ioutil.ReadAll(res.Body)
-	fmt.Println("test", test)
+	//test, _ := ioutil.ReadAll(res.Body)
+	//fmt.Println("test", test)
 
 	//for _, v := range list {
 	//	fmt.Println(v)
@@ -324,8 +324,6 @@ func (node *Node) LoadIDsFromStorage() []string {
 	for _, v := range docs.Rows {
 		set = append(set, v.ID)
 	}
-
-	fmt.Println(res)
 
 	return set
 }
@@ -415,8 +413,11 @@ func (node *Node) CouchReq(body string, method string, resource string) (string,
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		//return errors.New(err.Error() + ": " + body)
-		fmt.Println(err.Error() + ": " + body)
+		n.Log(Message{
+			Level: 1,
+			Text:  err.Error(),
+		})
+
 	}
 	defer res.Body.Close()
 
