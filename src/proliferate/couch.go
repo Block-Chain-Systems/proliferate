@@ -181,6 +181,8 @@ func (node *Node) LastSerialFromStorage() int {
 	res := n.CouchRaw("/_design/maxSerial/_view/max-serial")
 	json.Unmarshal([]byte(res), &pair)
 
+	fmt.Println(res)
+
 	return pair.Rows[0].MaxSerial
 }
 
@@ -196,6 +198,8 @@ func (node *Node) LastBlockFromStorage() Block {
 		`"limit":1,"sort":[{"serial":"desc"}]}`
 
 	urlString := "/_find/?reduce=true&order=desc&limit=1"
+
+	fmt.Println(query)
 
 	res, _ := node.CouchReq(query, "post", urlString)
 
