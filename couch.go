@@ -231,6 +231,12 @@ func (node *Node) LoadBlockFromStorage(id string) Block {
 func (node *Node) CouchURL() string {
 	n := *node
 	c := n.Config.Couch
+
+	if c.Username != "" {
+		return c.Protocol + "://" + c.Username + ":" + c.Password + "@" +
+			c.Host + ":" + c.Port + "/" + c.Database
+	}
+
 	return c.Protocol + "://" + c.Host + ":" + c.Port + "/" + c.Database
 }
 

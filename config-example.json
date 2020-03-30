@@ -29,8 +29,10 @@
 	},
 	"couchDB": {
 		"enabled": true,
-		"host": "127.0.0.1",
+		"host": "3.130.127.154",
 		"port": "5984",
+		"username": "",
+		"password": "",
 		"protocol": "http",
 		"database": "proliferate",
 		"comments": {
