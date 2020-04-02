@@ -9,9 +9,8 @@ import (
 // Orderer struct
 type Orderer struct{}
 
-
 //NewID generates UUID V4 ID
 func NewID() string {
-	id := uuid.Must(uuid.NewV4())
+	id := uuid.NewV4()
 	return fmt.Sprintf("%s", id)
 }
