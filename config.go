@@ -62,7 +62,7 @@ type BuildConfig struct {
 var buildConfig = BuildConfig{
 	IdentityFolder: ".id",
 	IdentityFile:   "id.json",
-	ConfigFile:     "proliferate.json",
+	ConfigFile:     "/etc/proliferate.json",
 	CertFile:       "id.cert",
 	CertExpYears:   5,
 	KeyFile:        "id.pem",
