@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"encoding/json"
-	"io/ioutil"
 )
 
 // Message struct used by Log and LogRaw function
