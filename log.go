@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"encoding/json"
+	"io/ioutil"
 )
 
 // Message struct used by Log and LogRaw function
@@ -40,10 +41,15 @@ func (node *Node) Log(message Message) {
 	message.Function = frame.Function
 	message.Caller = caller.Function
 
+	text := string(Prepare(message))
+
 	if l.Console == true && message.Level <= l.Level {
-		text := string(Prepare(message))
 		LogEmit(LabelSeverity(message.Level),
 			strings.Replace(text, wd, ".", -1))
+	}
+
+	if l.File == true && message.Level <= l.Level {
+		LogToFile(text, l.FileLocation)
 	}
 }
 
@@ -96,3 +102,14 @@ func LogRaw(message Message) {
 	text := Prepare(message)
 	LogEmit(LabelSeverity(message.Level), text)
 }
+
+func LogToFile(text, filename string) error {
+
+    // Write the text to the file
+    err := ioutil.WriteFile(filename, []byte(text), 0644)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+

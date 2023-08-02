@@ -67,7 +67,7 @@ func (node *Node) DownloadPeerList() {
 	list := n.Config.Network.Discovery
 	//url := ""
 
-	if len(list) > 0 {
+	if len(list) == 0 {
 		n.Log(Message{
 			Level: 3,
 			Text:  "No peers configured for discovery",
